@@ -1,0 +1,9 @@
+label: dos
+label-id: 0x45e18b08
+device: primary.img
+unit: sectors
+
+primary.img1 : start=        2048, size=      307200, type=83
+primary.img2 : start=      309248, size=       86016, type=83
+primary.img3 : start=      395264, size=      512000, type=83
+primary.img4 : start=      907264, size=      141312, type=83

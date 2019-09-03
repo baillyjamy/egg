@@ -1,0 +1,32 @@
+{
+  "model": "Loopback device",
+  "type": "msdos",
+  "size": 536870912,
+  "number_of_partitions": 4,
+  "partitions": [
+    {
+      "size": 307200,
+      "filesystem": "fat32",
+      "start": 2048,
+      "end": 309247
+    },
+    {
+      "size": 86016,
+      "filesystem": "ext2",
+      "start": 309248,
+      "end": 395263
+    },
+    {
+      "size": 512000,
+      "filesystem": "ext4",
+      "start": 395264,
+      "end": 907263
+    },
+    {
+      "size": 141312,
+      "filesystem": "linux-swap(v1)",
+      "start": 907264,
+      "end": 1048575
+    }
+  ]
+}

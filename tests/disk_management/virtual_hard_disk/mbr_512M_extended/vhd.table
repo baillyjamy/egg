@@ -1,0 +1,14 @@
+label: dos
+label-id: 0x5df0b135
+device: VHD.img
+unit: sectors
+
+VHD.img1 : start=        2048, size=      512000, type=5
+VHD.img2 : start=      514048, size=      307200, type=83
+VHD.img3 : start=      821248, size=      102400, type=83
+VHD.img4 : start=      923648, size=      124928, type=83
+VHD.img5 : start=        4096, size=       86016, type=83
+VHD.img6 : start=       92160, size=       86016, type=83
+VHD.img7 : start=      180224, size=       86016, type=83
+VHD.img8 : start=      268288, size=       86016, type=83
+VHD.img9 : start=      356352, size=      157696, type=83
