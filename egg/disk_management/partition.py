@@ -7,6 +7,10 @@ class Partition(object):
         self.rawPartition = partition
 
     @property
+    def name(self) -> str:
+        return self.rawPartition.get_name()
+
+    @property
     def path(self) -> str:
         return self.rawPartition.path
 
