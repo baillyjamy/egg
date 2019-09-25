@@ -20,3 +20,6 @@ msgstr "Previous"
 
 msgid "bot_right_next_btn"
 msgstr "Next"
+
+msgid "bot_right_install_btn"
+msgstr "Install"

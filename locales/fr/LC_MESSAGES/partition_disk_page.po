@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Gérer vos partitions pour pouvoir installer Raven-OS"
+
+msgid "sidebar_title"
+msgstr "Selection de vos partitions"
+
+msgid "notallocated"
+msgstr "Non alloué"
+
+msgid "column_1"
+msgstr "Partition"
+
+msgid "column_2"
+msgstr "Nom"
+
+msgid "column_3"
+msgstr "Système de fichier"
+
+msgid "column_4"
+msgstr "Point de montage"
+
+msgid "column_5"
+msgstr "Etiquette"
+
+msgid "column_6"
+msgstr "Taille"
+
+msgid "column_7"
+msgstr "Taille utilisé"
+
+msgid "column_8"
+msgstr "Taille libre"

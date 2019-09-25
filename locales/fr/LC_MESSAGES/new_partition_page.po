@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Nouvelle partition"
+
+msgid "cancel"
+msgstr "Annuler"
+
+msgid "add"
+msgstr "Ajouter"
+
+msgid "minimum_size"
+msgstr "Taille minimum :"
+
+msgid "maximum_size"
+msgstr "Taille maximum :"
+
+msgid "partition_size"
+msgstr "Taille de partition :"
+
+msgid "before_partition_size"
+msgstr "Espace libre avant la partition :"
+
+msgid "after_partition_size"
+msgstr "Espace libre après la partition :"
+
+msgid "filesytem"
+msgstr "Système de fichier :"
+
+msgid "mountpoint"
+msgstr "Point de montage :"
+
+msgid "partition_name"
+msgstr "Nom de partition :"
+
+msgid "label"
+msgstr "Etiquette :"

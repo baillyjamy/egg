@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Ajout du nouvel utilisateur"
+
+msgid "sidebar_title"
+msgstr "Ajout d'un utilisateur"
+
+msgid "root_configuration_title"
+msgstr "Configuration pour l'utilisateur root"
+
+msgid "user_configuration_title"
+msgstr "Configuration pour votre compte utilisateur personnel"
+
+msgid "user_real_name_entry_label"
+msgstr "Votre nom et prénom réel"
+
+msgid "user_entry_label"
+msgstr "Nom d'utilisateur"
+
+msgid "password_entry_label"
+msgstr "Entrer votre mot de passe"
+
+msgid "validation_password_entry_label"
+msgstr "Confirmer votre mot de passe"
+
+msgid "user_placeholder_entry"
+msgstr "Taper votre nom d'utilisateur ici"
+
+msgid "user_real_placeholder_entry"
+msgstr "Taper votre réel nom d'utilisateur complet ici"
+
+msgid "user_requirement_label"
+msgstr "Le nom d'utilisateur doit seulement avoir des lettres en majuscules et minuscules de a à z, nombres, et les caractères suivant : .-_"
+
+msgid "password_requirement_label"
+msgstr "Le mot de passe doit avoir des lettres en majuscules et minuscules, des nombres, et des caractères spéciaux"

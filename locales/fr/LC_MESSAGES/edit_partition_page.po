@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Editer la partition"
+
+msgid "cancel"
+msgstr "Annuler"
+
+msgid "resize"
+msgstr "Redimensionner"
+
+msgid "minimum_size"
+msgstr "Taille minimum :"
+
+msgid "maximum_size"
+msgstr "Taille maximum :"
+
+msgid "partition_size"
+msgstr "Taille de partition :"
+
+msgid "before_partition_size"
+msgstr "Espace libre avant la partition :"
+
+msgid "after_partition_size"
+msgstr "Espace libre après la partition :"

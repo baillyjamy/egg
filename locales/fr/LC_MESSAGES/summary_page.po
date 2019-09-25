@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Votre configuration d'installation"
+
+msgid "sidebar_title"
+msgstr "Récapitulatif"
+
+msgid "installation_language"
+msgstr "Le langage système choisis est le"
+
+msgid "installation_keyboard"
+msgstr "Le clavier système choisis est le"
+
+msgid "installation_timezone"
+msgstr "Vous avez configuré le fuseau horaire sur :"
+
+msgid "installation_disk"
+msgstr "Vous avez sélectionnez le disque :"
+
+msgid "installation_partition"
+msgstr "Vous avez sélectionnez les partitions suivante :"

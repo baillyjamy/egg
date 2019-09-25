@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Manage your partition for install the system Raven-OS"
+
+msgid "sidebar_title"
+msgstr "Select your partitions"
+
+msgid "notallocated"
+msgstr "Not allocated"
+
+msgid "column_1"
+msgstr "Partition"
+
+msgid "column_2"
+msgstr "Name"
+
+msgid "column_3"
+msgstr "Filesytem"
+
+msgid "column_4"
+msgstr "Mountpoint"
+
+msgid "column_5"
+msgstr "Label"
+
+msgid "column_6"
+msgstr "Size"
+
+msgid "column_7"
+msgstr "Used space"
+
+msgid "column_8"
+msgstr "Free space"

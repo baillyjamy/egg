@@ -1,0 +1,19 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Select the hard disk where Raven will be install"
+
+msgid "sidebar_title"
+msgstr "Select the disk"
+
+msgid "desc_disk"
+msgstr "Disk:"
+
+msgid "disk_usage_choice_1"
+msgstr "Automatic but it will erase the all content of the disk"
+
+msgid "disk_usage_choice_2"
+msgstr "Manual but you will need to choose the partioning"

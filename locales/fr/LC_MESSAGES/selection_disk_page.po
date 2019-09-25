@@ -1,0 +1,19 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Selection du disque dur sur lequel sera installé Raven"
+
+msgid "sidebar_title"
+msgstr "Selection du disque"
+
+msgid "desc_disk"
+msgstr "Disque :"
+
+msgid "disk_usage_choice_1"
+msgstr "Automatique mais le contenu entier du disque sera effacé"
+
+msgid "disk_usage_choice_2"
+msgstr "Manuel mais vous devriez choisir votre propre partitionnement"

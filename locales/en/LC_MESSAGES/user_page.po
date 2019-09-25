@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Adding the new user"
+
+msgid "sidebar_title"
+msgstr "Adding the new user"
+
+msgid "root_configuration_title"
+msgstr "Configuration for the user root"
+
+msgid "user_configuration_title"
+msgstr "Configuration for your personnal user account"
+
+msgid "user_real_name_entry_label"
+msgstr "Your name and your real firstname"
+
+msgid "user_entry_label"
+msgstr "Your username"
+
+msgid "password_entry_label"
+msgstr "Type your password"
+
+msgid "validation_password_entry_label"
+msgstr "Confirm your password"
+
+msgid "user_placeholder_entry"
+msgstr "Type your username here"
+
+msgid "user_real_placeholder_entry"
+msgstr "Type your real fullname here"
+
+msgid "user_requirement_label"
+msgstr "The username should have only letters in uppercase and lowercase from a to z, numbers, and the following characters: .-_"
+
+msgid "password_requirement_label"
+msgstr "The password should have letters in uppercase and lowercase, numbers, and special characters"
