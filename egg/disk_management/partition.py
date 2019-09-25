@@ -1,4 +1,8 @@
+import os
+
 import parted
+
+import egg.disk_management
 
 
 class Partition(object):
@@ -29,3 +33,11 @@ class Partition(object):
     @property
     def end(self) -> int:
         return self.rawPartition.geometry.end
+
+    @property
+    def freespace(self):
+        mounted = egg.disk_management.mount_partition(parted_part=self.rawPartition)
+        info = os.statvfs(mounted)
+        free = info.f_frsize * info.f_bavail
+        egg.disk_management.umount_partition(parted_part=mounted)
+        return free
