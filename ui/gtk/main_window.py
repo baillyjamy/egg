@@ -12,7 +12,7 @@ from ui.gtk.pages.language_installation_page import LanguageInstallationPage
 from ui.gtk.pages.timezone_page import TimezonePage
 from ui.gtk.pages.selection_disk_page import SelectionDiskPage
 from ui.gtk.pages.partition_disk_page import PartitionDiskPage
-#from ui.gtk.pages.user_page import UserPage
+# from ui.gtk.pages.user_page import UserPage
 from ui.gtk.pages.summary_page import SummarryPage
 
 class Handler:

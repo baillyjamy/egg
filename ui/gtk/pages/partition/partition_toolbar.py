@@ -67,7 +67,7 @@ class PartitionToolbar(Gtk.Toolbar):
 
     def reset_default_partition(self, win):
         # Or raven default
-        self.parent_win.add_current_partitions()
+        self.parent_win.add_current_partitions(True)
 
     def nothing_selected(self):
         self.add_new_partition_button.set_sensitive(False)

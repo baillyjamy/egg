@@ -19,8 +19,8 @@ class ColumnRowPartitionTreeview(Gtk.TreeView):
 
     def add_new_partition_row(self, partition):
         self.liststore.append([partition.partition_name, partition.name,
-                               partition.filesystem.value, partition.mount_point, partition.label,
-                               partition.size_str, partition.used_size_str, partition.free_size_str])
+            partition.filesystem.value, partition.mount_point, partition.label,
+            partition.size_str, partition.used_size_str, partition.free_size_str])
         self.current_partition_row.append(partition)
         self._config_general['partition_disk']['partitions'] = self.current_partition_row
 

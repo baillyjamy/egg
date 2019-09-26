@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk, GnomeDesktop
-from egg.containers import Users
 from ui.gtk.main_window_button import MainWindowButton
 from ui.gtk.pages.page import Page
+from egg.user_management import UserManagement
 
 class FieldsEntry(Gtk.Entry):
     entry_id = None
@@ -65,7 +65,7 @@ class UserPage(Page):
         self._config_general["user_page"]["user_password"] = None
 
         # self._components.get_component("root_password_entry").add_provider_for_screen(Gdk.Screen.get_default(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-        self._user_management = Users.user_management()
+        self._user_management = UserManagement()
         self._components = Components()
         self.init_components()
         self.refresh_ui_language()

@@ -60,7 +60,8 @@ class SelectionDiskPage(Page):
     _disk = None
     _components = None
     _win_parent = None
-
+    _all_disks = list()
+    
     def __init__(self, language_manager, config_general):
         super(SelectionDiskPage, self).__init__()
         self._language_manager = language_manager
@@ -68,6 +69,7 @@ class SelectionDiskPage(Page):
         self._disk = DiskService()
         self._config_general["selection_disk_page"] = {}
         self._config_general["selection_disk_page"]["current_disk"] = None
+        self._config_general["selection_disk_page"]["current_disk_service"] = None
         self._config_general['selection_disk_page']['partition_type'] = None
         self._components = Components()
         self.init_components()
@@ -120,8 +122,11 @@ class SelectionDiskPage(Page):
         self._config_general["selection_disk_page"]["partition_type"] = 1
 
     def on_row_select_disk(self, list_box_disk, current_row_disk_clicked=None):
+        #self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[i]
         if not list_box_disk:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, False)
+            idx = current_row_disk_clicked.get_index()
+            self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx]
             return
 
         row_elem = current_row_disk_clicked.get_child()
@@ -131,6 +136,8 @@ class SelectionDiskPage(Page):
         
             self.add_button_test()
             self._config_general["selection_disk_page"]["current_disk"] = row_elem
+            idx = current_row_disk_clicked.get_index()
+            self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx]
             self.enable_next_step()
             return
 
@@ -170,6 +177,7 @@ class SelectionDiskPage(Page):
         disk_label = list()
         for item in disks:
             disk_label.append(DiskLabel(str(item.model), item.capacity, str(item.path)))
+            self._all_disks.append(item)
         
         disk_label.sort(key=lambda sort: sort.model.lower())
         for current in disk_label:

@@ -1,5 +1,6 @@
 from ui.gtk.main_window_button import MainWindowButton
 from egg.disk_management.diskservice import DiskService
+from egg.disk_management.diskservice import DiskService
 from ui.gtk.pages.page import Page
 from gi.repository import Gtk, Gdk
 from egg.size_calculator import SizeCalculator
@@ -209,19 +210,15 @@ class PartitionDiskPage(Page):
     def get_selected_before_after_partition(self):
         return self._components.get_component('partition_treeview').get_current_selected_row()
 
-    def add_current_partitions(self):
-        self._components.get_component('partition_treeview').delete_rows()
-        rows = [
-            ['/dev/sda1', 'name1', Filesystem.NTFS, '/boot/efi', 'ETIQUETTE1', 3000, 100, 2900],
-            ['/dev/sda2', 'name2', Filesystem.FAT32, '/boot', 'ETIQUETTE2', 2000, 1000, 1000],
-            ['/dev/sda3', 'name3', Filesystem.UNKNOWN, '', 'ETIQUETTE3', 100, 100, 0],
-            ['', self._language_manager.translate_msg('partition_disk_page', 'notallocated'), Filesystem.NOT_ALLOCATED, '', '', 900, 0, 0]
-        ]
-        for current in rows:
-            self._components.get_component('partition_treeview').add_new_partition_row(PartitionParameter(current[0], current[1],
-                                                                   current[2], current[3], current[4], current[5],
-                                                                   current[6], current[7]))
-        self._components.get_component('partition_toolbar').nothing_selected()
+    def add_current_partitions(self, force):
+        if force == True or self._components.get_component('partition_treeview').current_partition_row is None or len(self._components.get_component('partition_treeview').current_partition_row) == 0:
+            self._components.get_component('partition_treeview').delete_rows()
+            
+            for current in self._config_general["selection_disk_page"]["current_disk_service"].partitions:
+                current_partition_parameter = PartitionParameter()
+                current_partition_parameter.load_partition(current)
+                self._components.get_component('partition_treeview').add_new_partition_row(current_partition_parameter)
+            self._components.get_component('partition_toolbar').nothing_selected()
 
     def add_current_partitions_with_raven(self):
         pass
@@ -232,7 +229,6 @@ class PartitionDiskPage(Page):
     def long_task(self):
         Gdk.threads_enter()
         self.add_columns_titles()
-        self.add_current_partitions()
         #self.add_current_partitions_with_raven()
         Gdk.threads_leave()
 
@@ -242,6 +238,7 @@ class PartitionDiskPage(Page):
     def load_page(self):
         # configcheck
         # if "current_disk" in self._config_general["partition_disk"] and self._config_general["partition_disk"]["current_disk"] != None and "partition_type" in self._config_general["partition_disk"] and self._config_general["partition_disk"]["partition_type"] != None:
+        self.add_current_partitions(False)
         self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, True)
         # else:
         #     self._win_parent.set_can_next(False)

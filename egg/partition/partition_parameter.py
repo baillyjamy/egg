@@ -1,3 +1,4 @@
+import parted
 from egg.filesystem import Filesystem
 
 
@@ -25,7 +26,30 @@ class PartitionParameter:
         self.set_size(size)
         self.set_used_size(used_size)
         self.set_free_size(free_size)
-   
+
+    def convert_str_to_filesytem(self, filesystem):
+        if filesystem == "ntfs":
+            return Filesystem.NTFS
+        elif filesystem == "ext4":
+            return Filesystem.NTFS
+        elif filesystem == "fat32":
+            return Filesystem.FAT32
+        else:
+            return Filesystem.UNKNOWN
+
+    def load_partition(self, partition):
+        self.partition_name = partition.path
+        self.name = partition.name
+        if partition.filesystem is not None and partition.filesystem.type is not None:
+            self.filesystem = self.convert_str_to_filesytem(partition.filesystem.type)#Convert
+        else:
+            self.filesystem = Filesystem.UNKNOWN
+        self.mount_point = ''
+        self.label = ''
+        self.set_size(parted.formatBytes(partition.capacity, "MB")) # convert to mo
+        self.set_used_size(parted.formatBytes(partition.end, "MB")) # convert to mo
+        self.set_free_size(parted.formatBytes(partition.end - partition.capacity, "MB")) # convert to mo
+
     def set_size(self, size: float) -> None:
         self.size = size
         self.size_str = str(size) + ' Mio'
