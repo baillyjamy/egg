@@ -31,6 +31,21 @@ class Disk(object):
             event = DiskInstallEvent(self.path, self.write_table.__name__, table_name=table_name)
             InstallQueue().add(event)
 
+    def add_partition(self, fs: Partition.Filesystem, partition_type: Partition.Type, size: int, unit: str):
+        if self.is_managed:
+            if len(self.partitions) - 1:
+                start = self.partitions[len(self.partitions) - 1].end + 1
+                sectors = parted.sizeToSectors(size, unit, self.device.sectorSize)
+                geometry = parted.Geometry(start=start, length=sectors, device=self.device)
+                filesystem = parted.FileSystem(type=fs, geometry=geometry)
+                partition = parted.Partition(disk=self.disk, type=partition_type, fs=filesystem, geometry=geometry)
+                self.disk.addPartition(partition, constraint=self.device.optimalAlignedConstraint)
+                self.disk.commit()
+        else:
+            event = DiskInstallEvent(self.path, self.add_partition.__name__, fs=fs, partition_type=partition_type,
+                                     size=size, unit=unit)
+            InstallQueue().add(event)
+
     def to_unmanaged(self):
         unmanaged_disk = copy.copy(self)
         unmanaged_disk.is_managed = False
