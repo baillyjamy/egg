@@ -6,6 +6,8 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gdk, GObject, Gtk, GdkPixbuf, GLib
 from ui.gtk.main_window_button import MainWindowButton
 from egg.language_management import LanguageManagement
+from egg.install_queue.install_queue import InstallQueue
+from egg.command import cmd_exec
 from ui.gtk.pages.page import Page
 from ui.gtk.pages.language_live_page import LanguageLivePage
 from ui.gtk.pages.language_installation_page import LanguageInstallationPage
@@ -14,6 +16,7 @@ from ui.gtk.pages.selection_disk_page import SelectionDiskPage
 from ui.gtk.pages.partition_disk_page import PartitionDiskPage
 # from ui.gtk.pages.user_page import UserPage
 from ui.gtk.pages.summary_page import SummarryPage
+
 
 class Handler:
     @staticmethod
@@ -233,12 +236,8 @@ class MainWindowGtk:
                 pass
 
     def raven_os_install(self):
-        generatedCommands = ["ls"]
-        for currentCommand in generatedCommands:
-            try:
-                subprocess.check_call(currentCommand, shell=True)
-            except Exception as e:
-                pass
-
+        InstallQueue().execAll()
+        cmd_exec('ls -la')
+        
     def launch(self) -> None:
         Gtk.main()

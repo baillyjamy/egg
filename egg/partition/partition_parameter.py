@@ -46,9 +46,9 @@ class PartitionParameter:
             self.filesystem = Filesystem.UNKNOWN
         self.mount_point = ''
         self.label = ''
-        self.set_size(parted.formatBytes(partition.capacity, "MB")) # convert to mo
-        self.set_used_size(parted.formatBytes(partition.end, "MB")) # convert to mo
-        self.set_free_size(parted.formatBytes(partition.end - partition.capacity, "MB")) # convert to mo
+        self.set_size(partition.capacity(unit='MiB')) # convert to mo
+        self.set_used_size(partition.end) # convert to mo
+        self.set_free_size(partition.freespace) # convert to mo
 
     def set_size(self, size: float) -> None:
         self.size = size

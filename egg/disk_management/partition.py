@@ -28,7 +28,6 @@ class Partition(object):
     def path(self) -> str:
         return self.rawPartition.path
 
-    @property
     def capacity(self, unit='MB') -> int:
         return self.rawPartition.getLength(unit)
 
