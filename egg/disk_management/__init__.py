@@ -32,7 +32,15 @@ def is_mounted(path: str):
     cmd.start()
     status = cmd.wait()
     output = cmd.process.communicate()
-    return not output or status != 0
+    if not output or status != 0:
+        return False
+    else:
+        # Split opts.
+        for line in output:
+            # It should be one.
+            items = line.split(" ")
+            return {"path": items[0], "mountpoint": items[2], "type": items[4],
+                    "options": items[-1].replace("(", "").replace(")", "").replace("\n", "")}
 
 
 def mount_partition(parted_part: parted.partition = None, path: str = None, number: int = 1):
@@ -50,9 +58,9 @@ def mount_partition(parted_part: parted.partition = None, path: str = None, numb
         os.makedirs(_mountpoint)
 
     if is_mounted(path):
-        raise DiskActionError("%s is mounted" % path)
-
-    cmd_exec("mount %s %s" % (path, _mountpoint))
+        _mountpoint = is_mounted(path)["mountpoint"]
+    else:
+        cmd_exec("mount %s %s" % (path, _mountpoint))
 
     return _mountpoint
 
