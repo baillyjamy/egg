@@ -1,5 +1,5 @@
 import os
-
+from enum import Enum
 import parted
 
 import egg.disk_management
@@ -7,6 +7,15 @@ from egg.install_queue.install_event import InstallEvent
 
 
 class Partition(object):
+
+    class Type(Enum):
+        PARTITION_NORMAL = parted.PARTITION_NORMAL
+        PARTITION_LOGICAL = parted.PARTITION_LOGICAL
+        PARTITION_EXTENDED = parted.PARTITION_EXTENDED
+
+    class Filesystem(Enum):
+        EXT4 = "ext4"
+        SWAP = "swap"
 
     def __init__(self, partition: parted.Partition):
         self.rawPartition = partition
