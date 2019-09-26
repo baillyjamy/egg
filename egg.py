@@ -9,8 +9,11 @@ from egg.language_management import LanguageManagement
 
 gtk_found = False
 
-from ui.gtk.app import GtkApp
-gtk_found = True
+try:
+    from ui.gtk.app import GtkApp
+    gtk_found = True
+except (ValueError, ImportError):
+    pass
 
 
 def load_lang_files(locale_general: LanguageManagement, config_general: dict) -> None:

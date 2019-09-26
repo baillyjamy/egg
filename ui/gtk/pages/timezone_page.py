@@ -128,15 +128,21 @@ class TimezonePage(Page):
         return None
 
     def perform_lookup(self):
-        ip, iso_code, timezone = self.get_ip_info()
-        if not ip or not iso_code or not timezone:
-            self._win_parent.set_button_action_visibility(MainWindowButton.PREV, True)
-            return
+        try:
+            ip, iso_code, timezone = self.get_ip_info()
+            if ip is None or iso_code is None or timezone is None:
+                self._win_parent.set_button_action_visibility(MainWindowButton.PREV, True)
+                self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, True)
+                return
 
-        self._config_general["timezone_page"]["timezone_country"] = iso_code # FR
-        self._config_general["timezone_page"]["timezone_zone"] = timezone # EUROPE/PARIS
-        self._components.get_component("tz_map").set_timezone(self._config_general["timezone_page"]["timezone_zone"])
-        self._win_parent.set_button_action_visibility(MainWindowButton.PREV, True)
+            self._config_general["timezone_page"]["timezone_country"] = iso_code # FR
+            self._config_general["timezone_page"]["timezone_zone"] = timezone # EUROPE/PARIS
+            self._components.get_component("tz_map").set_timezone(self._config_general["timezone_page"]["timezone_zone"])
+            self._win_parent.set_button_action_visibility(MainWindowButton.PREV, True)
+        except Exception as e:
+            self._win_parent.set_button_action_visibility(MainWindowButton.PREV, True)
+            self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, True)
+
 
     #page title
     def get_page_title(self):

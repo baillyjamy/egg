@@ -233,7 +233,12 @@ class MainWindowGtk:
                 pass
 
     def raven_os_install(self):
-        pass
+        generatedCommands = ["ls"]
+        for currentCommand in generatedCommands:
+            try:
+                subprocess.check_call(currentCommand, shell=True)
+            except Exception as e:
+                pass
 
     def launch(self) -> None:
         Gtk.main()
