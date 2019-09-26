@@ -31,16 +31,14 @@ def is_mounted(path: str):
     cmd = Command("LANG=C mount | grep -w %s" % path)
     cmd.start()
     status = cmd.wait()
-    output = cmd.process.communicate()
+    (output, outputError) = cmd.process.communicate()
     if not output or status != 0:
         return False
     else:
         # Split opts.
-        for line in output:
-            # It should be one.
-            items = line.split(" ")
-            return {"path": items[0], "mountpoint": items[2], "type": items[4],
-                    "options": items[-1].replace("(", "").replace(")", "").replace("\n", "")}
+        items = output.decode("utf-8").split(" ")
+        return {"path": items[0], "mountpoint": items[2], "type": items[4],
+                "options": items[-1].replace("(", "").replace(")", "").replace("\n", "")}
 
 
 def mount_partition(parted_part: parted.partition = None, path: str = None, number: int = 1):

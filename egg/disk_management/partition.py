@@ -48,7 +48,7 @@ class Partition(object):
         mounted = egg.disk_management.mount_partition(parted_part=self.rawPartition)
         info = os.statvfs(mounted)
         free = info.f_frsize * info.f_bavail
-        egg.disk_management.umount_partition(parted_part=mounted)
+        egg.disk_management.umount_partition(path=mounted)
         return free
 
 

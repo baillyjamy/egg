@@ -27,7 +27,7 @@ class Command:
         self.pid = None
 
     def start(self):
-        self.process = subprocess.Popen(self.command, shell=True)
+        self.process = subprocess.Popen(self.command, stdout=subprocess.PIPE, shell=True)
         self.pid = self.process.pid
 
     def wait(self):
