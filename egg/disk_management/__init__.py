@@ -3,7 +3,7 @@ from typing import List
 
 import parted
 
-from egg.command import Command, cmd_exec
+from egg.command import Command, cmd_exec, CmdError
 
 __all__ = ['Disk', 'Partition']
 
@@ -58,7 +58,10 @@ def mount_partition(parted_part: parted.partition = None, path: str = None, numb
     if is_mounted(path):
         _mountpoint = is_mounted(path)["mountpoint"]
     else:
-        cmd_exec("mount %s %s" % (path, _mountpoint))
+        try:
+            cmd_exec("mount %s %s" % (path, _mountpoint))
+        except CmdError as e:
+            return _mountpoint
 
     return _mountpoint
 

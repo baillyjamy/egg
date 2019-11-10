@@ -1,6 +1,9 @@
 import gi
 import threading
 import subprocess
+
+from egg.disk_management import Partition
+
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gdk, GObject, Gtk, GdkPixbuf, GLib
@@ -14,7 +17,7 @@ from ui.gtk.pages.language_installation_page import LanguageInstallationPage
 from ui.gtk.pages.timezone_page import TimezonePage
 from ui.gtk.pages.selection_disk_page import SelectionDiskPage
 from ui.gtk.pages.partition_disk_page import PartitionDiskPage
-# from ui.gtk.pages.user_page import UserPage
+from ui.gtk.pages.user_page import UserPage
 from ui.gtk.pages.summary_page import SummarryPage
 
 
@@ -85,7 +88,7 @@ class MainWindowGtk:
         self._component.get_component('main_window').set_title(self._config_general['os_name'])
         self._component.get_component('main_window_bot_left_label').set_label('')
         pix_buf = GdkPixbuf.Pixbuf.new_from_file_at_scale(self._config_main_window['window_logo_bot_path'],
-                                                          180, 76, False)
+                                                          76, 76, False)
         self._component.get_component('main_window_bot_left_logo').set_from_pixbuf(pix_buf)
         if self._config_main_window['window_fullscreen']:
             self._component.get_component('main_window').fullscreen()
@@ -111,6 +114,7 @@ class MainWindowGtk:
             LanguageLivePage(self._locale_general, self._config_general),
             LanguageInstallationPage(self._locale_general, self._config_general),
             TimezonePage(self._locale_general, self._config_general),
+            UserPage(self._locale_general, self._config_general),
             SelectionDiskPage(self._locale_general, self._config_general),
             PartitionDiskPage(self._locale_general, self._config_general),
             SummarryPage(self._locale_general, self._config_general)
@@ -236,8 +240,10 @@ class MainWindowGtk:
                 pass
 
     def raven_os_install(self):
-        InstallQueue().execAll()
-        cmd_exec('ls -la')
+        pass
+        # unmanaged = self._config_general["selection_disk_page"]["current_disk_service"].to_unmanaged()
+        # unmanaged.add_partition(Partition.Filesystem.EXT4, Partition.Type.PARTITION_NORMAL, 300, "MB")
+        # InstallQueue().execAll()
         
     def launch(self) -> None:
         Gtk.main()

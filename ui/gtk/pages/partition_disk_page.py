@@ -11,7 +11,7 @@ from ui.gtk.pages.partition.column_row_partition_treeview import ColumnRowPartit
 
 class Components():
     _components = {}
-    
+
     def __init__(self, win, partition_page, language_manager, config_general):
         self._components['general_box'] = Gtk.Box(self, orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self._components['general_grid'] = Gtk.Grid()
@@ -28,6 +28,7 @@ class PartitionDiskPage(Page):
     _disk = None
     _components = None
     _win_parent = None
+    _disk_selection_update = None
 
     def __init__(self, language_manager, config_general):
         super(PartitionDiskPage, self).__init__()
@@ -43,7 +44,7 @@ class PartitionDiskPage(Page):
     def init_components(self):
         # General grid
         self._components.get_component('general_box').pack_start(self._components.get_component('general_grid'), True, True, 1)
-                
+
         self._components.get_component('general_grid').set_margin_start(10)
         self._components.get_component('general_grid').set_margin_end(10)
         self._components.get_component('general_grid').set_margin_top(10)
@@ -67,7 +68,7 @@ class PartitionDiskPage(Page):
         current_idx = self._components.get_component('partition_treeview').get_current_selected_idx_row()
         current_iter = self._components.get_component('partition_treeview').get_current_selected_iter_row()
         self._components.get_component('partition_treeview').update_partition_row(partition, current_idx)
-        
+
         if free_before > 0:
             free_partition = PartitionParameter()
             free_partition.set_size(free_before)
@@ -87,7 +88,7 @@ class PartitionDiskPage(Page):
         current_idx = self._components.get_component('partition_treeview').get_current_selected_idx_row()
         current_iter = self._components.get_component('partition_treeview').get_current_selected_iter_row()
         self._components.get_component('partition_treeview').update_partition_row(partition, current_idx)
-        
+
         print("p:" + str(partition.size) + " b:" + str(free_before) + " a:" + str(free_after))
 
         current_previous_partition = self.get_selected_previous_partition()
@@ -211,10 +212,14 @@ class PartitionDiskPage(Page):
         return self._components.get_component('partition_treeview').get_current_selected_row()
 
     def add_current_partitions(self, force):
-        if force == True or self._components.get_component('partition_treeview').current_partition_row is None or len(self._components.get_component('partition_treeview').current_partition_row) == 0:
+        if force is True or self._disk_selection_update is None \
+            or self._config_general["selection_disk_page"]["current_disk_service"] is not self._disk_selection_update \
+            or self._components.get_component('partition_treeview').current_partition_row is None \
+            or len(self._components.get_component('partition_treeview').current_partition_row) == 0:
+
+            self._disk_selection_update = self._config_general["selection_disk_page"]["current_disk_service"]
             self._components.get_component('partition_treeview').delete_rows()
-            
-            for current in self._config_general["selection_disk_page"]["current_disk_service"].partitions:
+            for current in self._disk_selection_update.partitions:
                 current_partition_parameter = PartitionParameter()
                 current_partition_parameter.load_partition(current)
                 self._components.get_component('partition_treeview').add_new_partition_row(current_partition_parameter)
@@ -257,7 +262,7 @@ class PartitionDiskPage(Page):
     #page id
     def get_page_id(self):
         return self._config_general['config_page']['partition_disk']['id']
-   
+
     #icon
     def get_page_icon(self):
         return self._config_general['config_page']['partition_disk']['icon']

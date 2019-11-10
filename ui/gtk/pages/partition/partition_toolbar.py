@@ -27,6 +27,11 @@ class PartitionToolbar(Gtk.Toolbar):
         self.add_new_partition_button.connect('clicked', self.add_new_partition)
         self.add_new_partition_button.show()
 
+
+        self.add_new_partition_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW)
+        self.add_new_partition_button.connect('clicked', self.add_new_partition)
+        self.add_new_partition_button.show()
+
         self.resize_move_partition_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_EDIT)
         self.resize_move_partition_button.connect('clicked', self.resize_move_partition)
         self.resize_move_partition_button.show()
@@ -43,6 +48,9 @@ class PartitionToolbar(Gtk.Toolbar):
         self.insert(self.resize_move_partition_button, 1)
         self.insert(self.delete_partition_button, 2)
         self.insert(reset_default_partition_button, 3)
+
+    def add_new_partition(self, win):
+        self.parent_win.new_partition_event()
 
     def add_new_partition(self, win):
         current_partition = self.parent_win.get_selected_partition()
@@ -76,10 +84,25 @@ class PartitionToolbar(Gtk.Toolbar):
 
     def valid_partition(self):
         self.add_new_partition_button.set_sensitive(False)
-        self.resize_move_partition_button.set_sensitive(True)
+        self.resize_move_partition_button.set_sensitive(False)
         self.delete_partition_button.set_sensitive(True)
 
     def free_space_partition(self):
-        self.add_new_partition_button.set_sensitive(True)
+        self.add_new_partition_button.set_sensitive(False)
         self.resize_move_partition_button.set_sensitive(False)
         self.delete_partition_button.set_sensitive(False)
+
+    # def nothing_selected(self):
+    #     self.add_new_partition_button.set_sensitive(False)
+    #     self.resize_move_partition_button.set_sensitive(False)
+    #     self.delete_partition_button.set_sensitive(False)
+
+    # def valid_partition(self):
+    #     self.add_new_partition_button.set_sensitive(False)
+    #     self.resize_move_partition_button.set_sensitive(True)
+    #     self.delete_partition_button.set_sensitive(True)
+
+    # def free_space_partition(self):
+    #     self.add_new_partition_button.set_sensitive(True)
+    #     self.resize_move_partition_button.set_sensitive(False)
+    #     self.delete_partition_button.set_sensitive(False)

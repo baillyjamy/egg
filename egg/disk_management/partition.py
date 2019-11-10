@@ -44,8 +44,16 @@ class Partition(object):
         return self.rawPartition.geometry.end
 
     @property
+    def mountpoint(self) -> str:
+        res = egg.disk_management.is_mounted(self.path)
+        if res is not False:
+            return res["mountpoint"]
+        else:
+            return ''
+
+    @property
     def freespace(self):
-        mounted = egg.disk_management.mount_partition(parted_part=self.rawPartition)
+        mounted = egg.disk_management.mount_partition(parted_part=self.rawPartition, number=self.rawPartition.number)
         info = os.statvfs(mounted)
         free = info.f_frsize * info.f_bavail
         egg.disk_management.umount_partition(path=mounted)

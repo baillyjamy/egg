@@ -31,7 +31,7 @@ class PartitionParameter:
         if filesystem == "ntfs":
             return Filesystem.NTFS
         elif filesystem == "ext4":
-            return Filesystem.NTFS
+            return Filesystem.EXT4
         elif filesystem == "fat32":
             return Filesystem.FAT32
         else:
@@ -44,11 +44,16 @@ class PartitionParameter:
             self.filesystem = self.convert_str_to_filesytem(partition.filesystem.type)#Convert
         else:
             self.filesystem = Filesystem.UNKNOWN
-        self.mount_point = ''
+        self.mount_point = partition.mountpoint
         self.label = ''
         self.set_size(partition.capacity(unit='MiB')) # convert to mo
-        self.set_used_size(partition.end) # convert to mo
-        self.set_free_size(partition.freespace) # convert to mo
+        try:
+            freesize = round(parted.formatBytes(partition.freespace, "MiB"), 2)
+            self.set_free_size(freesize)  # convert to mo
+            used_space = round(partition.capacity(unit='MiB') - freesize, 2)
+            self.set_used_size(used_space)  # convert to mo
+        except Exception as e:
+            return
 
     def set_size(self, size: float) -> None:
         self.size = size
