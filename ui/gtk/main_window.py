@@ -18,6 +18,7 @@ from ui.gtk.pages.timezone_page import TimezonePage
 from ui.gtk.pages.selection_disk_page import SelectionDiskPage
 from ui.gtk.pages.partition_disk_page import PartitionDiskPage
 from ui.gtk.pages.user_page import UserPage
+from ui.gtk.pages.network_page import NetworkPage
 from ui.gtk.pages.summary_page import SummarryPage
 
 
@@ -114,9 +115,10 @@ class MainWindowGtk:
             LanguageLivePage(self._locale_general, self._config_general),
             LanguageInstallationPage(self._locale_general, self._config_general),
             TimezonePage(self._locale_general, self._config_general),
-            UserPage(self._locale_general, self._config_general),
             SelectionDiskPage(self._locale_general, self._config_general),
             PartitionDiskPage(self._locale_general, self._config_general),
+            UserPage(self._locale_general, self._config_general),
+            NetworkPage(self._locale_general, self._config_general),
             SummarryPage(self._locale_general, self._config_general)
         ]
         # Add pages in the stack
