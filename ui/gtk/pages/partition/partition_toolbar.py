@@ -7,6 +7,7 @@ from ui.gtk.pages.partition.edit_partition_window import ResizeMovePartitionWind
 
 
 class PartitionToolbar(Gtk.Toolbar):
+    _config_general = None
     parent_win = None
     resize_move_partition_window = None
     add_partition_window = None
@@ -18,6 +19,7 @@ class PartitionToolbar(Gtk.Toolbar):
     def __init__(self, parent_win, language_manager, config_general):
         Gtk.Toolbar.__init__(self)
         self.parent_win = parent_win
+        self._config_general = config_general
         self.resize_move_partition_window = ResizeMovePartitionWindow(self.parent_win, language_manager, config_general)
         self.add_partition_window = AddPartitionWindow(self.parent_win, language_manager, config_general)
 
@@ -73,8 +75,10 @@ class PartitionToolbar(Gtk.Toolbar):
 
     def reset_default_partition(self, win):
         # Or raven default
-        self.parent_win.add_current_partitions(True)
-
+        if "partition_type" in self._config_general["selection_disk_page"] and self._config_general["selection_disk_page"]["partition_type"] is not None and self._config_general["selection_disk_page"]["partition_type"] == 2:
+            self.parent_win.add_current_partitions(True)
+        else:
+            self.parent_win.add_current_partitions_with_raven(True)
 
     # Without new resize
     # def nothing_selected(self):

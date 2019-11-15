@@ -116,7 +116,7 @@ class SelectionDiskPage(Page):
         current_button.connect("toggled", self.on_radio_button, radio_id)
         self._components.get_component("listbox_radio_selection").add(current_button)
 
-    def add_button_test(self):
+    def add_partition_type_buttons(self):
         self.add_radio_button(1, self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_1"))
         self.add_radio_button(2, self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_2"))
         self._config_general["selection_disk_page"]["partition_type"] = 1
@@ -134,7 +134,7 @@ class SelectionDiskPage(Page):
             for item in self._components.get_component("listbox_radio_selection").get_children():
                 self._components.get_component("listbox_radio_selection").remove(item)
         
-            self.add_button_test()
+            self.add_partition_type_buttons()
             self._config_general["selection_disk_page"]["current_disk"] = row_elem
             idx = current_row_disk_clicked.get_index()
             self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx]
@@ -184,7 +184,7 @@ class SelectionDiskPage(Page):
             self._components.get_component("listbox_disk_window").add(current)
 
         self._components.get_component("listbox_disk_window").add(self._components.get_component("more_disk_button"))
-        self.add_button_test()
+        self.add_partition_type_buttons()
         Gdk.threads_leave()
 
     def load_win(self, win):

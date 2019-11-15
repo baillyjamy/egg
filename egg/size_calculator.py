@@ -10,3 +10,12 @@ class SizeCalculator(object):
             size /= power
             i += 1
         return str(round(size, 2)), str(power_labels[i] + 'o')
+
+    @staticmethod
+    def get_mo_size(size):
+        power = 2**10
+
+        size /= power
+        size /= power
+
+        return round(size, 2)
