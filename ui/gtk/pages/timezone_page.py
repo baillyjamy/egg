@@ -79,8 +79,8 @@ class TimezonePage(Page):
                              item.zone])
 
         Gdk.threads_enter()
-        # self._components.get_component("city_entry").get_completion().set_model(tz_model)
-        # self.schedule_lookup()
+        self._components.get_component("city_entry").get_completion().set_model(tz_model)
+        self.schedule_lookup()
         Gdk.threads_leave()
 
     def change_timezone(self, completion, model, selection):

@@ -158,7 +158,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBox" id="add_win_filesystem_partition_combobox">
+                  <object class="GtkComboBoxText" id="add_win_filesystem_partition_combobox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="hexpand">True</property>
@@ -221,7 +221,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="add_win_mount_point_partition_entry">
+                  <object class="GtkEntry" id="add_win_name_partition_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>
@@ -232,7 +232,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="add_win_name_partition_entry">
+                  <object class="GtkEntry" id="add_win_mount_point_partition_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hexpand">True</property>

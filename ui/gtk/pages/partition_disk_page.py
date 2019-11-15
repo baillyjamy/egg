@@ -105,6 +105,9 @@ class PartitionDiskPage(Page):
                 free_partition.change_partition_to_unallocated(self._language_manager.translate_msg('partition_disk_page', 'notallocated'))
                 self._components.get_component('partition_treeview').add_new_partition_row_before_idx(free_partition, current_iter, current_idx)
                 current_idx += 1
+        elif current_previous_partition != None and current_previous_partition.filesystem == Filesystem.NOT_ALLOCATED:
+            self._components.get_component('partition_treeview').delete_rows_by_row_list([current_previous_partition])
+            current_idx -= 1
         # else check need delete check if currentprevious == 0
 
         # Exec en debug check probleme de value
@@ -117,16 +120,19 @@ class PartitionDiskPage(Page):
                 free_partition.set_size(free_after)
                 free_partition.change_partition_to_unallocated(self._language_manager.translate_msg('partition_disk_page', 'notallocated'))
                 self._components.get_component('partition_treeview').add_new_partition_row_after_idx(free_partition, current_iter, current_idx)
+        elif current_next_partition != None and current_next_partition.filesystem == Filesystem.NOT_ALLOCATED:
+            self._components.get_component('partition_treeview').delete_rows_by_row_list([current_next_partition])
 
         self._components.get_component('partition_toolbar').valid_partition()
 
 
-    def delete_partition(self, current_partition):
+    def delete_partition(self, current_partition, current_idx=None):
         previous_partition = None
         next_partition = None
 
         current_partition.change_partition_to_unallocated(self._language_manager.translate_msg('partition_disk_page', 'notallocated'))
-        current_idx = self._components.get_component('partition_treeview').get_current_selected_idx_row()
+        if current_idx is None:
+            current_idx = self._components.get_component('partition_treeview').get_current_selected_idx_row()
         if current_idx - 1 >= 0 and self._components.get_component('partition_treeview').current_partition_row[
             current_idx - 1].filesystem == Filesystem.NOT_ALLOCATED:
             previous_partition = self._components.get_component('partition_treeview').current_partition_row[current_idx - 1]

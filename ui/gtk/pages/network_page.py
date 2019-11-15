@@ -1,6 +1,7 @@
 from ui.gtk.main_window_button import MainWindowButton
 from ui.gtk.pages.page import Page
 from egg.disk_management.diskservice import DiskService
+from egg.network_management.wifi_service import WifiService
 from gi.repository import Gtk, Gdk
 from egg.size_calculator import SizeCalculator
 
@@ -66,11 +67,14 @@ class NetworkPage(Page):
         super(NetworkPage, self).__init__()
         self._language_manager = language_manager
         self._config_general = config_general
+        n = WifiService('wlp2s0')
+        ssids = n.ListWifi()
         self._disk = DiskService()
         self._config_general["network_page"] = {}
         self._config_general["network_page"]["current_disk"] = None
         self._config_general["network_page"]["current_disk_service"] = None
         self._config_general['network_page']['partition_type'] = None
+        
         self._components = Components()
         self.init_components()
         self.refresh_ui_language()
