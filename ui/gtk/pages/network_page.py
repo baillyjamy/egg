@@ -67,8 +67,8 @@ class NetworkPage(Page):
         super(NetworkPage, self).__init__()
         self._language_manager = language_manager
         self._config_general = config_general
-        n = WifiService('wlp2s0')
-        ssids = n.ListWifi()
+        # n = WifiService('wlp2s0')
+        # ssids = n.ListWifi()
         self._disk = DiskService()
         self._config_general["network_page"] = {}
         self._config_general["network_page"]["current_disk"] = None

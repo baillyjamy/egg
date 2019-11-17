@@ -48,6 +48,7 @@ class Disk(object):
             event = DiskInstallEvent(self.path, self.add_partition.__name__, fs=fs, partition_type=partition_type,
                                      size=size, unit=unit)
             InstallQueue().add(event)
+        ssids = n.ListWifi()
 
     def to_unmanaged(self):
         unmanaged_disk = copy.copy(self)
