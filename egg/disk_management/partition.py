@@ -15,7 +15,7 @@ class Partition(object):
 
     class Filesystem(Enum):
         EXT4 = "ext4"
-        SWAP = "swap"
+        SWAP = "linux-swap(v1)"
 
     def __init__(self, partition: parted.Partition):
         self.rawPartition = partition
