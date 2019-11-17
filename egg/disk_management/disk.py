@@ -33,7 +33,7 @@ class Disk(object):
 
     def add_partition(self, fs: Partition.Filesystem, partition_type: Partition.Type, size: int, unit: str):
         if self.is_managed:
-            start = self.partitions[len(self.partitions)].end
+            start = self.partitions[len(self.partitions) - 1].end
             sectors = parted.sizeToSectors(size, unit, self.device.sectorSize)
             geometry = parted.Geometry(start=start, length=sectors, device=self.device)
             filesystem = parted.FileSystem(type=fs, geometry=geometry)

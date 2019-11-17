@@ -242,6 +242,7 @@ class MainWindowGtk:
                 pass
 
     def raven_os_install(self):
+        InstallQueue().execAll()
         pass
         # unmanaged = self._config_general["selection_disk_page"]["current_disk_service"].to_unmanaged()
         # unmanaged.add_partition(Partition.Filesystem.EXT4, Partition.Type.PARTITION_NORMAL, 300, "MB")
