@@ -35,10 +35,13 @@ def is_mounted(path: str):
     if not output or status != 0:
         return False
     else:
-        # Split opts.
         items = output.decode("utf-8").split(" ")
-        return {"path": items[0], "mountpoint": items[2], "type": items[4],
-                "options": items[-1].replace("(", "").replace(")", "").replace("\n", "")}
+        return {
+            "path": items[0],
+            "mountpoint": items[2],
+            "type": items[4],
+            "options": items[-1].replace("(", "").replace(")", "").replace("\n", "")
+        }
 
 
 def mount_partition(parted_part: parted.partition = None, path: str = None, number: int = 1):
@@ -60,7 +63,7 @@ def mount_partition(parted_part: parted.partition = None, path: str = None, numb
     else:
         try:
             cmd_exec("mount %s %s" % (path, _mountpoint))
-        except CmdError as e:
+        except CmdError:
             return _mountpoint
 
     return _mountpoint
