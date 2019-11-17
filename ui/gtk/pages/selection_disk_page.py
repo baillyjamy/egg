@@ -122,11 +122,10 @@ class SelectionDiskPage(Page):
         self._config_general["selection_disk_page"]["partition_type"] = 1
 
     def on_row_select_disk(self, list_box_disk, current_row_disk_clicked=None):
-        #self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[i]
         if not list_box_disk:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, False)
             idx = current_row_disk_clicked.get_index()
-            self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx]
+            self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx].to_unmanaged()
             return
 
         row_elem = current_row_disk_clicked.get_child()
@@ -137,7 +136,7 @@ class SelectionDiskPage(Page):
             self.add_partition_type_buttons()
             self._config_general["selection_disk_page"]["current_disk"] = row_elem
             idx = current_row_disk_clicked.get_index()
-            self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx]
+            self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx].to_unmanaged()
             self.enable_next_step()
             return
 
