@@ -7,6 +7,7 @@ from ui.gtk.pages.partition.edit_partition_window import ResizeMovePartitionWind
 
 
 class PartitionToolbar(Gtk.Toolbar):
+    _config_general = None
     parent_win = None
     resize_move_partition_window = None
     add_partition_window = None
@@ -18,6 +19,7 @@ class PartitionToolbar(Gtk.Toolbar):
     def __init__(self, parent_win, language_manager, config_general):
         Gtk.Toolbar.__init__(self)
         self.parent_win = parent_win
+        self._config_general = config_general
         self.resize_move_partition_window = ResizeMovePartitionWindow(self.parent_win, language_manager, config_general)
         self.add_partition_window = AddPartitionWindow(self.parent_win, language_manager, config_general)
 
@@ -50,11 +52,9 @@ class PartitionToolbar(Gtk.Toolbar):
         self.insert(reset_default_partition_button, 3)
 
     def add_new_partition(self, win):
-        self.parent_win.new_partition_event()
-
-    def add_new_partition(self, win):
         current_partition = self.parent_win.get_selected_partition()
         self.add_partition_window.show_window(current_partition)
+    #     self.parent_win.new_partition_event()
 
     def resize_move_partition(self, win):
         before_partition_size = 0
@@ -75,7 +75,29 @@ class PartitionToolbar(Gtk.Toolbar):
 
     def reset_default_partition(self, win):
         # Or raven default
-        self.parent_win.add_current_partitions(True)
+        if "partition_type" in self._config_general["selection_disk_page"] and self._config_general["selection_disk_page"]["partition_type"] is not None and self._config_general["selection_disk_page"]["partition_type"] == 2:
+            self.parent_win.add_current_partitions(True)
+        else:
+            self.parent_win.add_current_partitions_with_raven(True)
+
+    # Without new resize
+    # def nothing_selected(self):
+    #     self.add_new_partition_button.set_sensitive(False)
+    #     self.resize_move_partition_button.set_sensitive(False)
+    #     self.delete_partition_button.set_sensitive(False)
+
+    # def valid_partition(self):
+    #     self.add_new_partition_button.set_sensitive(False)
+    #     self.resize_move_partition_button.set_sensitive(False)
+    #     self.delete_partition_button.set_sensitive(True)
+
+    # def free_space_partition(self):
+    #     self.add_new_partition_button.set_sensitive(False)
+    #     self.resize_move_partition_button.set_sensitive(False)
+    #     self.delete_partition_button.set_sensitive(False)
+
+
+
 
     def nothing_selected(self):
         self.add_new_partition_button.set_sensitive(False)
@@ -84,25 +106,10 @@ class PartitionToolbar(Gtk.Toolbar):
 
     def valid_partition(self):
         self.add_new_partition_button.set_sensitive(False)
-        self.resize_move_partition_button.set_sensitive(False)
+        self.resize_move_partition_button.set_sensitive(True)
         self.delete_partition_button.set_sensitive(True)
 
     def free_space_partition(self):
-        self.add_new_partition_button.set_sensitive(False)
+        self.add_new_partition_button.set_sensitive(True)
         self.resize_move_partition_button.set_sensitive(False)
         self.delete_partition_button.set_sensitive(False)
-
-    # def nothing_selected(self):
-    #     self.add_new_partition_button.set_sensitive(False)
-    #     self.resize_move_partition_button.set_sensitive(False)
-    #     self.delete_partition_button.set_sensitive(False)
-
-    # def valid_partition(self):
-    #     self.add_new_partition_button.set_sensitive(False)
-    #     self.resize_move_partition_button.set_sensitive(True)
-    #     self.delete_partition_button.set_sensitive(True)
-
-    # def free_space_partition(self):
-    #     self.add_new_partition_button.set_sensitive(True)
-    #     self.resize_move_partition_button.set_sensitive(False)
-    #     self.delete_partition_button.set_sensitive(False)

@@ -1,6 +1,7 @@
 from ui.gtk.main_window_button import MainWindowButton
 from ui.gtk.pages.page import Page
 from egg.disk_management.diskservice import DiskService
+from egg.network_management.wifi_service import WifiService
 from gi.repository import Gtk, Gdk
 from egg.size_calculator import SizeCalculator
 
@@ -56,21 +57,24 @@ class Components():
     def get_component(self, component_name):
         return self._components[component_name]
 
-class SelectionDiskPage(Page):
+class NetworkPage(Page):
     _disk = None
     _components = None
     _win_parent = None
     _all_disks = list()
     
     def __init__(self, language_manager, config_general):
-        super(SelectionDiskPage, self).__init__()
+        super(NetworkPage, self).__init__()
         self._language_manager = language_manager
         self._config_general = config_general
+        n = WifiService('wlp2s0')
+        ssids = n.ListWifi()
         self._disk = DiskService()
-        self._config_general["selection_disk_page"] = {}
-        self._config_general["selection_disk_page"]["current_disk"] = None
-        self._config_general["selection_disk_page"]["current_disk_service"] = None
-        self._config_general['selection_disk_page']['partition_type'] = None
+        self._config_general["network_page"] = {}
+        self._config_general["network_page"]["current_disk"] = None
+        self._config_general["network_page"]["current_disk_service"] = None
+        self._config_general['network_page']['partition_type'] = None
+        
         self._components = Components()
         self.init_components()
         self.refresh_ui_language()
@@ -104,7 +108,7 @@ class SelectionDiskPage(Page):
 
 
     def on_radio_button(self, button, partition_type):
-        self._config_general["selection_disk_page"]["partition_type"] = partition_type
+        self._config_general["network_page"]["partition_type"] = partition_type
         self.enable_next_step()
 
     def add_radio_button(self, radio_id, label):
@@ -116,17 +120,17 @@ class SelectionDiskPage(Page):
         current_button.connect("toggled", self.on_radio_button, radio_id)
         self._components.get_component("listbox_radio_selection").add(current_button)
 
-    def add_partition_type_buttons(self):
-        self.add_radio_button(1, self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_1"))
-        self.add_radio_button(2, self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_2"))
-        self._config_general["selection_disk_page"]["partition_type"] = 1
+    def add_button_test(self):
+        self.add_radio_button(1, self._language_manager.translate_msg("network_page", "disk_usage_choice_1"))
+        self.add_radio_button(2, self._language_manager.translate_msg("network_page", "disk_usage_choice_2"))
+        self._config_general["network_page"]["partition_type"] = 1
 
     def on_row_select_disk(self, list_box_disk, current_row_disk_clicked=None):
-        #self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[i]
+        #self._config_general["network_page"]["current_disk_service"] = self._all_disks[i]
         if not list_box_disk:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, False)
             idx = current_row_disk_clicked.get_index()
-            self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx]
+            self._config_general["network_page"]["current_disk_service"] = self._all_disks[idx]
             return
 
         row_elem = current_row_disk_clicked.get_child()
@@ -134,10 +138,10 @@ class SelectionDiskPage(Page):
             for item in self._components.get_component("listbox_radio_selection").get_children():
                 self._components.get_component("listbox_radio_selection").remove(item)
         
-            self.add_partition_type_buttons()
-            self._config_general["selection_disk_page"]["current_disk"] = row_elem
+            self.add_button_test()
+            self._config_general["network_page"]["current_disk"] = row_elem
             idx = current_row_disk_clicked.get_index()
-            self._config_general["selection_disk_page"]["current_disk_service"] = self._all_disks[idx]
+            self._config_general["network_page"]["current_disk_service"] = self._all_disks[idx]
             self.enable_next_step()
             return
 
@@ -158,9 +162,9 @@ class SelectionDiskPage(Page):
             label = current.get_child()
             if label == self._components.get_component("more_disk_button"):
                 continue
-            if "current_disk" in self._config_general["selection_disk_page"] \
-            and self._config_general["selection_disk_page"]["current_disk"] != None\
-            and label.model == self._config_general["selection_disk_page"]["current_disk"].model:
+            if "current_disk" in self._config_general["network_page"] \
+            and self._config_general["network_page"]["current_disk"] != None\
+            and label.model == self._config_general["network_page"]["current_disk"].model:
                 self._components.get_component("listbox_disk_window").select_row(current)
                 return
         self._components.get_component("listbox_disk_window").select_row(check_not_empty[0])
@@ -184,14 +188,14 @@ class SelectionDiskPage(Page):
             self._components.get_component("listbox_disk_window").add(current)
 
         self._components.get_component("listbox_disk_window").add(self._components.get_component("more_disk_button"))
-        self.add_partition_type_buttons()
+        self.add_button_test()
         Gdk.threads_leave()
 
     def load_win(self, win):
         self._win_parent = win
 
     def enable_next_step(self):
-        if 'current_disk' in self._config_general['selection_disk_page'] and self._config_general['selection_disk_page']['current_disk'] != None and 'partition_type' in self._config_general['selection_disk_page'] and self._config_general['selection_disk_page']['partition_type'] != None:
+        if 'current_disk' in self._config_general['network_page'] and self._config_general['network_page']['current_disk'] != None and 'partition_type' in self._config_general['network_page'] and self._config_general['network_page']['partition_type'] != None:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, True)
         else:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, False)
@@ -203,22 +207,22 @@ class SelectionDiskPage(Page):
     def refresh_ui_language(self):
         for current_row in self._components.get_component("listbox_radio_selection").get_children():
             radio_button = current_row.get_child()
-            new_label = self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_" + str(radio_button.buttonid))
+            new_label = self._language_manager.translate_msg("network_page", "disk_usage_choice_" + str(radio_button.buttonid))
             radio_button.text = new_label
             radio_button.set_label(new_label)
 
     #page title
     def get_page_title(self):
-        return self._language_manager.translate_msg("selection_disk_page", "title")
+        return self._language_manager.translate_msg("network_page", "title")
 
     #page sidebar title
     def get_page_sidebar_title(self):
-        return self._language_manager.translate_msg("selection_disk_page", "sidebar_title")
+        return self._language_manager.translate_msg("network_page", "sidebar_title")
 
     #page id
     def get_page_id(self):
-        return self._config_general["config_page"]["selection_disk"]["id"]
+        return self._config_general["config_page"]["network"]["id"]
    
     #icon
     def get_page_icon(self):
-        return self._config_general["config_page"]["selection_disk"]["icon"]
+        return self._config_general["config_page"]["network"]["icon"]

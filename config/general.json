@@ -27,6 +27,10 @@
             "add_glade_file": "./ui/gtk/glade/partition/add_partition_window.glade",
             "resize_glade_file": "./ui/gtk/glade/partition/resize_move_partition_window.glade"
         },
+        "network": {
+            "id": "network",
+            "icon": "./ui/gtk/img/ico/page6_license.png"
+        },
         "user": {
             "id": "user",
             "icon": "./ui/gtk/img/ico/page6_license.png"
@@ -36,5 +40,5 @@
             "icon": "./ui/gtk/img/ico/page7_license.png"
         }
     },
-    "language_files": ["main_window", "popup", "general", "language_live_page", "timezone_page", "selection_disk_page", "partition_disk_page", "new_partition_page", "edit_partition_page", "user_page", "summary_page"]
+    "language_files": ["main_window", "popup", "general", "language_live_page", "timezone_page", "selection_disk_page", "partition_disk_page", "new_partition_page", "edit_partition_page", "network_page", "user_page", "summary_page"]
 }

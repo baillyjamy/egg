@@ -89,7 +89,7 @@ class ColumnRowPartitionTreeview(Gtk.TreeView):
         if treeiter is None or not treeiter:
             return None
         idx_selected_row = treeiter[0].get_indices()[0] - 1
-        if self.current_partition_row is not None and len(self.current_partition_row) > 0 and idx_selected_row > 0:
+        if self.current_partition_row is not None and len(self.current_partition_row) > 0 and idx_selected_row >= 0:
             return self.current_partition_row[idx_selected_row]
         return None
 

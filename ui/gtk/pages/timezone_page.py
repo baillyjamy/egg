@@ -16,7 +16,6 @@ class Components():
         self._components["frame_window"] = Gtk.Frame()
         self._components["tz_map"] = TimezoneMap.TimezoneMap()
         self._components["city_entry"] = Gtk.Entry()
-        self._components["test"] = Gtk.Label()
         self._components["tz_completion"] = TimezoneMap.TimezoneCompletion()
 
     def get_component(self, component_name):
@@ -40,24 +39,16 @@ class TimezonePage(Page):
 
     def init_components(self):
         self._components.get_component("frame_window").set_shadow_type(Gtk.ShadowType.NONE)
-        self._components.get_component("general_box").pack_end(self._components.get_component("frame_window"), True, True, 1)
         self._components.get_component("frame_window").set_margin_end(0)
         self._components.get_component("frame_window").set_margin_start(0)
         self._components.get_component("frame_window").set_property("margin-right", 5)
         self._components.get_component("frame_window").set_property("margin-start", 5)
-        
         self._components.get_component("frame_window").add(self._components.get_component("tz_map"))
 
-
+        
         self._components.get_component("city_entry").set_property("margin-right", 20)
         self._components.get_component("city_entry").set_property("margin-start", 20)
         self._components.get_component("city_entry").set_property("margin-top", 10)
-        # self._components.get_component("test").set_text("deeeeee")
-        self._components.get_component("general_box").set_vexpand(True)
-        self._components.get_component("general_box").set_hexpand(True)
-        self._components.get_component("general_box").set_baseline_position(2)
-        self._components.get_component("general_box").pack_end(self._components.get_component("test"), False, False, 0)
-
 
         self._components.get_component("tz_completion").set_text_column(0)
         self._components.get_component("tz_completion").set_inline_completion(True)
@@ -65,6 +56,11 @@ class TimezonePage(Page):
         self._components.get_component("tz_completion").connect("match-selected", self.change_timezone)
         self._components.get_component("city_entry").set_completion(self._components.get_component("tz_completion"))
         self._components.get_component("tz_map").connect("location-changed", self.changed)
+
+        
+        self._components.get_component("general_box").pack_start(self._components.get_component("frame_window"), True, True, 0)
+        self._components.get_component("general_box").pack_end(self._components.get_component("city_entry"), True, False, 1)
+
 
     def load_win(self, win):
         self._win_parent = win
@@ -83,8 +79,8 @@ class TimezonePage(Page):
                              item.zone])
 
         Gdk.threads_enter()
-        # self._components.get_component("city_entry").get_completion().set_model(tz_model)
-        # self.schedule_lookup()
+        self._components.get_component("city_entry").get_completion().set_model(tz_model)
+        self.schedule_lookup()
         Gdk.threads_leave()
 
     def change_timezone(self, completion, model, selection):
