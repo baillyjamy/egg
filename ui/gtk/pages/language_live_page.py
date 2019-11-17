@@ -1,3 +1,7 @@
+import gi
+
+gi.require_version('GnomeDesktop', '3.0')
+
 from gi.repository import Gtk, Gdk, GObject, GnomeDesktop
 from ui.gtk.main_window_button import MainWindowButton
 from ui.gtk.pages.page import Page

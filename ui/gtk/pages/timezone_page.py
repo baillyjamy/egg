@@ -2,6 +2,8 @@ from egg.tz import Database
 from ui.gtk.main_window_button import MainWindowButton
 from ui.gtk.pages.page import Page
 
+import gi
+gi.require_version('TimezoneMap', '1.0')
 from gi.repository import TimezoneMap, Gtk, Gdk, GLib
 import urllib.request
 import geoip2.database
