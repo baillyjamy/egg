@@ -1,7 +1,6 @@
 from gi.repository import Gtk, Gdk, GLib, GdkPixbuf
 from ui.gtk.pages.page import Page
 from ui.gtk.main_window_button import MainWindowButton
-import threading
 
 
 class SummaryRow(Gtk.Frame):
@@ -177,7 +176,7 @@ class SummarryPage(Page):
     def load_page(self):
         self.set_pages_content()
         self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, True)
-    
+
     #page title
     def get_page_title(self):
         return self._language_manager.translate_msg("summary_page", "title")

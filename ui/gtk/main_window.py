@@ -9,8 +9,6 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gdk, GObject, Gtk, GdkPixbuf, GLib
 from ui.gtk.main_window_button import MainWindowButton
 from egg.language_management import LanguageManagement
-from egg.install_queue.install_queue import InstallQueue
-from egg.command import cmd_exec
 from ui.gtk.pages.page import Page
 from ui.gtk.pages.language_live_page import LanguageLivePage
 from ui.gtk.pages.language_installation_page import LanguageInstallationPage
@@ -20,6 +18,36 @@ from ui.gtk.pages.partition_disk_page import PartitionDiskPage
 from ui.gtk.pages.user_page import UserPage
 from ui.gtk.pages.network_page import NetworkPage
 from ui.gtk.pages.summary_page import SummarryPage
+from egg.install_queue.install_queue import InstallQueue
+import os
+
+def orderring_path(paths):
+    modified_path = paths
+    
+    i = 0
+    while i < len(paths):
+        j = 0
+        while j < len(modified_path):
+            # Si ma string 1 est plus grande que la string 2 et que l'index 1 est inferieur 2
+            # Ou Si ma string 1 est plus petite que la string 2 et que l'index 1 est superieur à 2
+            if modified_path[j].mount_point is not paths[i].mount_point and modified_path[j].mount_point.startswith(os.path.abspath(paths[i].mount_point)) and i < j and len(paths[i].mount_point.split(os.path.sep)) > len(modified_path[j].mount_point.split(os.path.sep)):
+                current_check = modified_path[i]
+                current_to_change = modified_path[j]
+                
+                modified_path[j] = current_check
+                modified_path[i] = current_to_change
+                return orderring_path(modified_path)
+            elif modified_path[j].mount_point is not paths[i].mount_point and modified_path[j].mount_point.startswith(os.path.abspath(paths[i].mount_point)) and i > j and len(paths[i].mount_point.split(os.path.sep)) < len(modified_path[j].mount_point.split(os.path.sep)):
+                current_check = modified_path[i]
+                current_to_change = modified_path[j]
+                
+                modified_path[j] = current_check
+                modified_path[i] = current_to_change
+                return orderring_path(modified_path)
+
+            j += 1
+        i += 1
+    return paths
 
 
 class Handler:
@@ -243,7 +271,12 @@ class MainWindowGtk:
 
     def raven_os_install(self):
         InstallQueue().execAll()
-        pass
+        
+        #Exec formatage
+        InstallQueue().execAll()
+
+        self._config_general['partition_disk']['partitions'] = orderring_path(self._config_general['partition_disk']['partitions'])
+        # print(paths)
         # unmanaged = self._config_general["selection_disk_page"]["current_disk_service"].to_unmanaged()
         # unmanaged.add_partition(Partition.Filesystem.EXT4, Partition.Type.PARTITION_NORMAL, 300, "MB")
         # InstallQueue().execAll()

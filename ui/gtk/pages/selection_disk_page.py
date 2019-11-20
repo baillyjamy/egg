@@ -170,20 +170,22 @@ class SelectionDiskPage(Page):
 
     def long_task(self):
         Gdk.threads_enter()
-        disks = self._disk.get_disk_list()
+        try:
+            disks = self._disk.get_disk_list()
+            disk_label = list()
+            for item in disks:
+                disk_label.append(DiskLabel(str(item.model), item.capacity, str(item.path)))
+                self._all_disks.append(item)
+            
+            disk_label.sort(key=lambda sort: sort.model.lower())
+            for current in disk_label:
+                self._components.get_component("listbox_disk_window").add(current)
 
+            self._components.get_component("listbox_disk_window").add(self._components.get_component("more_disk_button"))
+            self.add_partition_type_buttons()
+        except Exception as e:
+            pass
         # take only 5 one or will have problem with the window
-        disk_label = list()
-        for item in disks:
-            disk_label.append(DiskLabel(str(item.model), item.capacity, str(item.path)))
-            self._all_disks.append(item)
-        
-        disk_label.sort(key=lambda sort: sort.model.lower())
-        for current in disk_label:
-            self._components.get_component("listbox_disk_window").add(current)
-
-        self._components.get_component("listbox_disk_window").add(self._components.get_component("more_disk_button"))
-        self.add_partition_type_buttons()
         Gdk.threads_leave()
 
     def load_win(self, win):

@@ -4,7 +4,7 @@ from typing import List
 import parted
 
 from egg.disk_management.partition import Partition
-from egg.install_queue.install_event import InstallEvent
+from egg.install_queue.install_event import InstallEvent, BasicInstallCommandEvent
 from egg.install_queue.install_queue import InstallQueue
 
 
@@ -43,12 +43,21 @@ class Disk(object):
             filesystem = parted.FileSystem(type=fs.value, geometry=geometry)
             partition = parted.Partition(disk=self.disk, type=partition_type.value, fs=filesystem, geometry=geometry)
             self.disk.addPartition(partition, constraint=self.device.optimalAlignedConstraint)
+            partition.setFlag(parted.PARTITION_NORMAL)
             self.disk.commit()
+
+            event = None
+            if fs is Partition.Filesystem.EXT4:
+                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.ext4 " + partition.path)
+            elif fs is Partition.Filesystem.SWAP:
+                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkswap " + partition.path)
+            elif fs is Partition.Filesystem.FAT32:
+                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.vfat " + partition.path)
+            InstallQueue().add(event)
         else:
             event = DiskInstallEvent(self.path, self.add_partition.__name__, fs=fs, partition_type=partition_type,
                                      size=size, unit=unit)
             InstallQueue().add(event)
-        ssids = n.ListWifi()
 
     def to_unmanaged(self):
         unmanaged_disk = copy.copy(self)

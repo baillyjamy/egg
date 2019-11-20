@@ -175,20 +175,20 @@ class NetworkPage(Page):
 
     def long_task(self):
         Gdk.threads_enter()
-        disks = self._disk.get_disk_list()
+        # disks = self._disk.get_disk_list()
 
-        # take only 5 one or will have problem with the window
-        disk_label = list()
-        for item in disks:
-            disk_label.append(DiskLabel(str(item.model), item.capacity, str(item.path)))
-            self._all_disks.append(item)
+        # # take only 5 one or will have problem with the window
+        # disk_label = list()
+        # for item in disks:
+        #     disk_label.append(DiskLabel(str(item.model), item.capacity, str(item.path)))
+        #     self._all_disks.append(item)
         
-        disk_label.sort(key=lambda sort: sort.model.lower())
-        for current in disk_label:
-            self._components.get_component("listbox_disk_window").add(current)
+        # disk_label.sort(key=lambda sort: sort.model.lower())
+        # for current in disk_label:
+        #     self._components.get_component("listbox_disk_window").add(current)
 
-        self._components.get_component("listbox_disk_window").add(self._components.get_component("more_disk_button"))
-        self.add_button_test()
+        # self._components.get_component("listbox_disk_window").add(self._components.get_component("more_disk_button"))
+        # self.add_button_test()
         Gdk.threads_leave()
 
     def load_win(self, win):
