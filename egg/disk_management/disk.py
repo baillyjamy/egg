@@ -48,11 +48,11 @@ class Disk(object):
 
             event = None
             if fs is Partition.Filesystem.EXT4:
-                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.ext4 " + partition.path)
+                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.ext4 -F " + partition.path)
             elif fs is Partition.Filesystem.SWAP:
-                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkswap " + partition.path)
+                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkswap -f " + partition.path)
             elif fs is Partition.Filesystem.FAT32:
-                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.vfat " + partition.path)
+                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.vfat -F " + partition.path)
             InstallQueue().add(event)
         else:
             event = DiskInstallEvent(self.path, self.add_partition.__name__, fs=fs, partition_type=partition_type,

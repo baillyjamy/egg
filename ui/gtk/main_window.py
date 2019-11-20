@@ -19,6 +19,7 @@ from ui.gtk.pages.user_page import UserPage
 from ui.gtk.pages.network_page import NetworkPage
 from ui.gtk.pages.summary_page import SummarryPage
 from egg.install_queue.install_queue import InstallQueue
+from egg.install_queue.install_event import BasicInstallCommandEvent
 import os
 
 def orderring_path(paths):
@@ -36,14 +37,14 @@ def orderring_path(paths):
                 
                 modified_path[j] = current_check
                 modified_path[i] = current_to_change
-                return orderring_path(modified_path)
+                orderring_path(modified_path)
             elif modified_path[j].mount_point is not paths[i].mount_point and modified_path[j].mount_point.startswith(os.path.abspath(paths[i].mount_point)) and i > j and len(paths[i].mount_point.split(os.path.sep)) < len(modified_path[j].mount_point.split(os.path.sep)):
                 current_check = modified_path[i]
                 current_to_change = modified_path[j]
                 
                 modified_path[j] = current_check
                 modified_path[i] = current_to_change
-                return orderring_path(modified_path)
+                orderring_path(modified_path)
 
             j += 1
         i += 1
@@ -146,7 +147,6 @@ class MainWindowGtk:
             SelectionDiskPage(self._locale_general, self._config_general),
             PartitionDiskPage(self._locale_general, self._config_general),
             UserPage(self._locale_general, self._config_general),
-            NetworkPage(self._locale_general, self._config_general),
             SummarryPage(self._locale_general, self._config_general)
         ]
         # Add pages in the stack
@@ -276,6 +276,18 @@ class MainWindowGtk:
         InstallQueue().execAll()
 
         self._config_general['partition_disk']['partitions'] = orderring_path(self._config_general['partition_disk']['partitions'])
+
+        locale = None
+        if "language_installation_page" in self._config_general and "locale" in self._config_general["language_installation_page"] and self._config_general["language_installation_page"]["locale"] is not None: # changer ici installation
+            locale = self._config_general["language_installation_page"]["locale"]
+       
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p /tmp/mnt"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount /dev/sdb4 /tmp/mnt"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="chroot /tmp/mnt"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="touch file_created"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="echo '" + self._locale_general.translate_msg("summary_page", "installation_language") + " (" + locale + ")" + "' >> file_created"))
+
+        InstallQueue().execAll()
         # print(paths)
         # unmanaged = self._config_general["selection_disk_page"]["current_disk_service"].to_unmanaged()
         # unmanaged.add_partition(Partition.Filesystem.EXT4, Partition.Type.PARTITION_NORMAL, 300, "MB")
