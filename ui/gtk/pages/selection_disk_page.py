@@ -172,14 +172,11 @@ class SelectionDiskPage(Page):
         Gdk.threads_enter()
         try:
             disks = self._disk.get_disk_list()
-            disk_label = list()
+            disks.sort(key=lambda sort: sort.model.lower())
+
             for item in disks:
-                disk_label.append(DiskLabel(str(item.model), item.capacity, str(item.path)))
+                self._components.get_component("listbox_disk_window").add(DiskLabel(str(item.model), item.capacity, str(item.path)))
                 self._all_disks.append(item)
-            
-            disk_label.sort(key=lambda sort: sort.model.lower())
-            for current in disk_label:
-                self._components.get_component("listbox_disk_window").add(current)
 
             self._components.get_component("listbox_disk_window").add(self._components.get_component("more_disk_button"))
             self.add_partition_type_buttons()

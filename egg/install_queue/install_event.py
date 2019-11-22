@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
+import uuid
 import subprocess
 
 
@@ -15,6 +16,7 @@ class InstallEvent(ABC):
         self.type = event_type
         self.method_name = method_name
         self.kwargs = kwargs
+        self.id = str(uuid.uuid4())
 
     @abstractmethod
     def exec(self):

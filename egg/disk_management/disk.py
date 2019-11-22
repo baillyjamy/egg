@@ -18,7 +18,8 @@ class Disk(object):
         else:
             raise parted.DiskException("no device specified")
         self.disk: parted.Disk = parted.newDisk(self.device)
-        self.partitions: List[Partition] = list(map(lambda x: Partition(x), self.disk.partitions))
+        if self.disk is not None:
+            self.partitions: List[Partition] = list(map(lambda x: Partition(x), self.disk.partitions))
         self.is_managed: bool = is_managed
 
     def __del__(self):
@@ -53,16 +54,21 @@ class Disk(object):
                 event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkswap -f " + partition.path)
             elif fs is Partition.Filesystem.FAT32:
                 event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.vfat -F " + partition.path)
-            InstallQueue().add(event)
+            return InstallQueue().add(event)
         else:
             event = DiskInstallEvent(self.path, self.add_partition.__name__, fs=fs, partition_type=partition_type,
                                      size=size, unit=unit)
-            InstallQueue().add(event)
+            return InstallQueue().add(event)
 
     def to_unmanaged(self):
         unmanaged_disk = copy.copy(self)
         unmanaged_disk.is_managed = False
         return unmanaged_disk
+
+    def get_and_refresh_partition(self):
+        self.partitions: List[Partition] = list(map(lambda x: Partition(x), self.disk.partitions))
+        return self.partitions
+
 
     @property
     def model(self) -> str:

@@ -20,6 +20,8 @@ from ui.gtk.pages.network_page import NetworkPage
 from ui.gtk.pages.summary_page import SummarryPage
 from egg.install_queue.install_queue import InstallQueue
 from egg.install_queue.install_event import BasicInstallCommandEvent
+from egg.disk_management.disk import Disk
+from egg.disk_management.diskservice import DiskService
 import os
 
 def orderring_path(paths):
@@ -50,6 +52,10 @@ def orderring_path(paths):
         i += 1
     return paths
 
+def get_partitions_by_mount_point(mount_point):
+    # if is not None
+    # if is not None and mount_point == partiotion.mount_point 
+    return ""
 
 class Handler:
     @staticmethod
@@ -270,28 +276,32 @@ class MainWindowGtk:
                 pass
 
     def raven_os_install(self):
-        InstallQueue().execAll()
+        # Exec event        
+        #InstallQueue().execAll()
         
-        #Exec formatage
+        # Exec formatage
+        #InstallQueue().execAll()
+
+        partitions_in_dd = DiskService().get_disk(self._config_general["selection_disk_page"]["current_disk_service"].path).partitions
+        partitions = zip(self._config_general['partition_disk']['partitions'], partitions_in_dd)
+        partitions = orderring_path(partitions)
+        # for partition_front, parition_dd in partitions:
+        #     print("d")
+
+        # Mount multiple partitions
+        raven_install_path = self._config_general['install_mount_point']
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount /dev/sdb4 " + raven_install_path))
+
+        # Install Raven
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' pull"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install corefs"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install bash coreutils"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install essentials linux"))
+
+
+        # Raven Configuration
         InstallQueue().execAll()
-
-        self._config_general['partition_disk']['partitions'] = orderring_path(self._config_general['partition_disk']['partitions'])
-
-        locale = None
-        if "language_installation_page" in self._config_general and "locale" in self._config_general["language_installation_page"] and self._config_general["language_installation_page"]["locale"] is not None: # changer ici installation
-            locale = self._config_general["language_installation_page"]["locale"]
-       
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p /tmp/mnt"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount /dev/sdb4 /tmp/mnt"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="chroot /tmp/mnt"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="touch file_created"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="echo '" + self._locale_general.translate_msg("summary_page", "installation_language") + " (" + locale + ")" + "' >> file_created"))
-
-        InstallQueue().execAll()
-        # print(paths)
-        # unmanaged = self._config_general["selection_disk_page"]["current_disk_service"].to_unmanaged()
-        # unmanaged.add_partition(Partition.Filesystem.EXT4, Partition.Type.PARTITION_NORMAL, 300, "MB")
-        # InstallQueue().execAll()
         
     def launch(self) -> None:
         Gtk.main()

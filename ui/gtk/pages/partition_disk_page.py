@@ -11,6 +11,11 @@ from ui.gtk.pages.partition.column_row_partition_treeview import ColumnRowPartit
 from egg.size_calculator import SizeCalculator
 import egg.disk_management.partition
 
+from egg.install_queue.install_queue import InstallQueue
+
+from egg.install_queue.install_event import InstallEvent
+
+
 class Components():
     _components = {}
 
@@ -263,13 +268,13 @@ class PartitionDiskPage(Page):
                 PartitionParameter("Raven Installation Partition", "EFI partition", Filesystem.FAT32, "/boot/efi", "RAVEN-OS PARTITION", 560, 0, 560),
                 PartitionParameter("Raven Installation Partition", "Root partition", Filesystem.EXT4, "/", "RAVEN-OS PARTITION", disk_mo_capicity, 0, disk_mo_capicity)]
             self._components.get_component('partition_treeview').delete_rows()
+            InstallQueue().clearAll()
             for current in partitions:
                 filesystem = egg.disk_management.Partition.Filesystem[str(current.filesystem.name)]
                 partition_type = egg.disk_management.Partition.Type.PARTITION_NORMAL
                 self._config_general["selection_disk_page"]["current_disk_service"].add_partition(filesystem, partition_type, current.size, "MB")
                 self._components.get_component('partition_treeview').add_new_partition_row(current)
             self._components.get_component('partition_toolbar').nothing_selected()
-
             self._last_partition_type = new_partition_type
 
     def window_status(self, status):
@@ -286,7 +291,6 @@ class PartitionDiskPage(Page):
     def load_page(self):
         # configcheck
         # if "current_disk" in self._config_general["partition_disk"] and self._config_general["partition_disk"]["current_disk"] != None and "partition_type" in self._config_general["partition_disk"] and self._config_general["partition_disk"]["partition_type"] != None:
-                
         if "partition_type" in self._config_general["selection_disk_page"] and \
             self._config_general["selection_disk_page"]["partition_type"] is not None \
             and self._config_general["selection_disk_page"]["partition_type"] == 2:
