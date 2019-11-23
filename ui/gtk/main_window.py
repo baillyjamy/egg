@@ -6,6 +6,7 @@ from egg.disk_management import Partition
 
 gi.require_version('Gtk', '3.0')
 
+from functools import cmp_to_key
 from gi.repository import Gdk, GObject, Gtk, GdkPixbuf, GLib
 from ui.gtk.main_window_button import MainWindowButton
 from egg.language_management import LanguageManagement
@@ -22,40 +23,33 @@ from egg.install_queue.install_queue import InstallQueue
 from egg.install_queue.install_event import BasicInstallCommandEvent
 from egg.disk_management.disk import Disk
 from egg.disk_management.diskservice import DiskService
+
+from egg.filesystem import Filesystem
 import os
 
-def orderring_path(paths):
-    modified_path = paths
-    
-    i = 0
-    while i < len(paths):
-        j = 0
-        while j < len(modified_path):
-            # Si ma string 1 est plus grande que la string 2 et que l'index 1 est inferieur 2
-            # Ou Si ma string 1 est plus petite que la string 2 et que l'index 1 est superieur à 2
-            if modified_path[j].mount_point is not paths[i].mount_point and modified_path[j].mount_point.startswith(os.path.abspath(paths[i].mount_point)) and i < j and len(paths[i].mount_point.split(os.path.sep)) > len(modified_path[j].mount_point.split(os.path.sep)):
-                current_check = modified_path[i]
-                current_to_change = modified_path[j]
-                
-                modified_path[j] = current_check
-                modified_path[i] = current_to_change
-                orderring_path(modified_path)
-            elif modified_path[j].mount_point is not paths[i].mount_point and modified_path[j].mount_point.startswith(os.path.abspath(paths[i].mount_point)) and i > j and len(paths[i].mount_point.split(os.path.sep)) < len(modified_path[j].mount_point.split(os.path.sep)):
-                current_check = modified_path[i]
-                current_to_change = modified_path[j]
-                
-                modified_path[j] = current_check
-                modified_path[i] = current_to_change
-                orderring_path(modified_path)
 
-            j += 1
-        i += 1
-    return paths
+def sort_by_path(left, right):
+    # Si ma string 1 est plus grande que la string 2 et que l'index 1 est inferieur 2
+    # Ou Si ma string 1 est plus petite que la string 2 et que l'index 1 est superieur à 2
+    left_ui_partition, left_partition = left
+    right_ui_partition, right_partition = right
 
-def get_partitions_by_mount_point(mount_point):
-    # if is not None
-    # if is not None and mount_point == partiotion.mount_point 
-    return ""
+    if not left_ui_partition.mount_point and right_ui_partition.mount_point:
+        return 1
+    elif left_ui_partition.mount_point and not right_ui_partition.mount_point:
+        return -1
+
+    if left_ui_partition.mount_point is not right_ui_partition.mount_point \
+        and (left_ui_partition.mount_point.startswith(os.path.abspath(right_ui_partition.mount_point)) or right_ui_partition.mount_point.startswith(os.path.abspath(left_ui_partition.mount_point))) \
+        and len(list(filter(None, right_ui_partition.mount_point.split(os.path.sep)))) > len(list(filter(None, left_ui_partition.mount_point.split(os.path.sep)))):
+        return -1
+    elif left_ui_partition.mount_point is not right_ui_partition.mount_point \
+        and (left_ui_partition.mount_point.startswith(os.path.abspath(right_ui_partition.mount_point)) or right_ui_partition.mount_point.startswith(os.path.abspath(left_ui_partition.mount_point))) \
+        and len(list(filter(None, right_ui_partition.mount_point.split(os.path.sep)))) < len(list(filter(None, left_ui_partition.mount_point.split(os.path.sep)))):
+        return 1
+
+    return 0
+
 
 class Handler:
     @staticmethod
@@ -283,15 +277,17 @@ class MainWindowGtk:
         #InstallQueue().execAll()
 
         partitions_in_dd = DiskService().get_disk(self._config_general["selection_disk_page"]["current_disk_service"].path).partitions
-        partitions = zip(self._config_general['partition_disk']['partitions'], partitions_in_dd)
-        partitions = orderring_path(partitions)
-        # for partition_front, parition_dd in partitions:
-        #     print("d")
+        partitions = list(zip(self._config_general['partition_disk']['partitions'], partitions_in_dd))
+        partitions = sorted(partitions, key=cmp_to_key(lambda a, b: sort_by_path(a, b)))
 
         # Mount multiple partitions
         raven_install_path = self._config_general['install_mount_point']
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount /dev/sdb4 " + raven_install_path))
+        
+        for current_ui, current in partitions:
+            if current_ui.mount_point and current_ui.filesystem is not Filesystem.SWAP:
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path + current_ui.mount_point))
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount " + current.path + " " + raven_install_path + current_ui.mount_point))
 
         # Install Raven
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' pull"))
@@ -299,6 +295,10 @@ class MainWindowGtk:
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install bash coreutils"))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install essentials linux"))
 
+
+        for current_ui, current in partitions:
+            if current_ui.filesystem is Filesystem.SWAP:
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="swapon " + current.path))
 
         # Raven Configuration
         InstallQueue().execAll()
