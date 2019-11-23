@@ -50,6 +50,9 @@ def sort_by_path(left, right):
 
     return 0
 
+def chroot_command(path, command):
+    return "chroot " + path + " /bin/bash -c '" + command + "'"
+
 
 class Handler:
     @staticmethod
@@ -270,38 +273,52 @@ class MainWindowGtk:
                 pass
 
     def raven_os_install(self):
-        # Exec event        
-        #InstallQueue().execAll()
+        # Exec event
+        # InstallQueue().execAll()
         
         # Exec formatage
-        #InstallQueue().execAll()
-
+        # InstallQueue().execAll()
+        InstallQueue().clearAll()
         partitions_in_dd = DiskService().get_disk(self._config_general["selection_disk_page"]["current_disk_service"].path).partitions
         partitions = list(zip(self._config_general['partition_disk']['partitions'], partitions_in_dd))
         partitions = sorted(partitions, key=cmp_to_key(lambda a, b: sort_by_path(a, b)))
 
         # Mount multiple partitions
         raven_install_path = self._config_general['install_mount_point']
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path))
+        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path))
         
-        for current_ui, current in partitions:
-            if current_ui.mount_point and current_ui.filesystem is not Filesystem.SWAP:
-                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path + current_ui.mount_point))
-                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount " + current.path + " " + raven_install_path + current_ui.mount_point))
+        # for current_ui, current in partitions:
+        #     if current_ui.mount_point and current_ui.filesystem is not Filesystem.SWAP:
+        #         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path + current_ui.mount_point))
+        #         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount " + current.path + " " + raven_install_path + current_ui.mount_point))            
 
         # Install Raven
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' pull"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install corefs"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install bash coreutils"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install essentials linux"))
-
+        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' pull"))
+        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install corefs"))
+        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install bash coreutils"))
+        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install essentials linux"))
 
         for current_ui, current in partitions:
             if current_ui.filesystem is Filesystem.SWAP:
-                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="swapon " + current.path))
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "swapon " + current.path)))
+
+
+        # Install config
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "rm -f /etc/localtime")))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "ln -sf /usr/share/zoneinfo/" + self._config_general["timezone_page"]["timezone_zone"] + " /etc/localtime")))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo 'KEYMAP=\"" + self._config_general["language_installation_page"]["keyboard"] + "\"' > /etc/vconsole.conf")))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo 'LANG=\"" + self._config_general["language_installation_page"]["locale"] + "\"' > /etc/locale.conf")))
+
+
+        # for current_ui, current in partitions:
+        #     if current_ui.mount_point and current_ui.filesystem is not Filesystem.SWAP:
+        #         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="umount " + current.path))
+
 
         # Raven Configuration
         InstallQueue().execAll()
         
+
+
     def launch(self) -> None:
         Gtk.main()

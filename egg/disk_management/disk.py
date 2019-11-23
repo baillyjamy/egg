@@ -53,7 +53,7 @@ class Disk(object):
             elif fs is Partition.Filesystem.SWAP:
                 event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkswap -f " + partition.path)
             elif fs is Partition.Filesystem.FAT32:
-                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.vfat -F " + partition.path)
+                event = BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkfs.vfat " + partition.path)
             return InstallQueue().add(event)
         else:
             event = DiskInstallEvent(self.path, self.add_partition.__name__, fs=fs, partition_type=partition_type,
