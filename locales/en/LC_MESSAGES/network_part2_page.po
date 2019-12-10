@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "title"
+msgstr "Network configuration part 2"
+
+msgid "sidebar_title"
+msgstr "Network configuration part 2"
+
+msgid "network_hostname"
+msgstr "Configure your hostname:"
