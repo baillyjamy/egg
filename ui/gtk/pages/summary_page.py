@@ -67,6 +67,8 @@ class SummarryPage(Page):
     _disk_page = None
     _partition_page = None
     _user_page = None
+    _network_page = None
+    _network_part2_page = None
 
     def __init__(self, language_manager, config_general):
         super(SummarryPage, self).__init__()
@@ -102,9 +104,17 @@ class SummarryPage(Page):
             language_manager.translate_msg("partition_disk_page", "sidebar_title"))
         self._components.get_component("items_box").pack_start(self._partition_page, False, False, 2)
 
+        self._network_page = SummaryRow(config_general["config_page"]["network"]["icon"],
+            language_manager.translate_msg("network_page", "sidebar_title"))
+        self._components.get_component("items_box").pack_start(self._network_page, False, False, 2)
+
+        self._network_part2_page = SummaryRow(config_general["config_page"]["networkpart2"]["icon"],
+            language_manager.translate_msg("network_part2_page", "sidebar_title"))
+        self._components.get_component("items_box").pack_start(self._network_part2_page, False, False, 2)
+
         self._user_page = SummaryRow(config_general["config_page"]["user"]["icon"],
             language_manager.translate_msg("user_page", "sidebar_title"))
-        #self._components.get_component("items_box").pack_start(self._user_page, False, False, 2)
+        self._components.get_component("items_box").pack_start(self._user_page, False, False, 2)
 
 
     def load_win(self, win):
@@ -115,6 +125,8 @@ class SummarryPage(Page):
         self._timezone_page.update_title(self._language_manager.translate_msg("timezone_page", "sidebar_title"))
         self._disk_page.update_title(self._language_manager.translate_msg("selection_disk_page", "sidebar_title"))
         self._partition_page.update_title(self._language_manager.translate_msg("partition_disk_page", "sidebar_title"))
+        self._network_page.update_title(self._language_manager.translate_msg("network_page", "sidebar_title"))
+        self._network_part2_page.update_title(self._language_manager.translate_msg("network_part2_page", "sidebar_title"))
         self._user_page.update_title(self._language_manager.translate_msg("user_page", "sidebar_title"))
         self.set_pages_content()
 
@@ -131,6 +143,9 @@ class SummarryPage(Page):
         timezone_country = ""
         selection_disk_page = ""
         selection_partition_page = ""
+        hostname_network_part2_page = ""
+        username_user_page = ""
+        realfullname_user_page = ""
 
         if "language_installation_page" in self._config_general and "locale" in self._config_general["language_installation_page"] and self._config_general["language_installation_page"]["locale"] is not None: # changer ici installation
             locale = self._config_general["language_installation_page"]["locale"]
@@ -152,6 +167,15 @@ class SummarryPage(Page):
         if "partition_disk" in self._config_general and "partitions" in self._config_general["partition_disk"] and self._config_general["partition_disk"]["partitions"] is not None:
             selection_partition_page = self._config_general["partition_disk"]["partitions"]        
 
+        if "user_page" in self._config_general and "user_username" in self._config_general["user_page"] and self._config_general["user_page"]["user_username"] is not None:
+            username_user_page = self._config_general["user_page"]["user_username"]
+
+        if "user_page" in self._config_general and "user_realfullname" in self._config_general["user_page"] and self._config_general["user_page"]["user_realfullname"] is not None:
+            realfullname_user_page = self._config_general["user_page"]["user_realfullname"]
+
+        if "network_page" in self._config_general and "hostname" in self._config_general["network_page"] and self._config_general["network_page"]["hostname"] is not None:
+            hostname_network_part2_page = self._config_general["network_page"]["hostname"]
+
         self._language_page.clean_label()
         self._language_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_language") + " " + locale_sz + " (" + locale + ")"))
         self._language_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_keyboard") + " " + keyboard_sz + " (" + keyboard + ")" ))
@@ -170,8 +194,14 @@ class SummarryPage(Page):
             for current in selection_partition_page:
                 self._partition_page.add_label(ContentLabel(current.get_partition_desc()))
 
-        self._user_page.clean_label()
+        self._network_part2_page.clean_label()
+        self._network_part2_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_network_part2")))
+        self._network_part2_page.add_label(ContentLabel(hostname_network_part2_page))
 
+        self._user_page.clean_label()
+        self._user_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_user")))
+        self._user_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_user_realfullname") + " " + realfullname_user_page))
+        self._user_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_user_username") + " " + username_user_page))
 
     def load_page(self):
         self.set_pages_content()

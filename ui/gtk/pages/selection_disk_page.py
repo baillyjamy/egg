@@ -145,18 +145,18 @@ class SelectionDiskPage(Page):
         self._components.get_component("scroll_disk_window").set_vexpand(True)
         self._components.get_component("scroll_disk_window").set_valign(Gtk.Align.FILL)
         self._components.get_component("more_disk_button").get_parent().hide()
-        self.set_selected_language_row()
+        self.set_selected_disk_row()
         self.enable_next_step()
 
-    def set_selected_language_row(self):
+    def set_selected_disk_row(self):
         check_not_empty = self._components.get_component("listbox_disk_window").get_children()
         if not check_not_empty:
             return
 
         for current in self._components.get_component("listbox_disk_window").get_children():
             label = current.get_child()
-            if label == self._components.get_component("more_disk_button"):
-                continue
+            if label is self._components.get_component("more_disk_button"):
+                break
             if "current_disk" in self._config_general["selection_disk_page"] \
             and self._config_general["selection_disk_page"]["current_disk"] != None\
             and label.model == self._config_general["selection_disk_page"]["current_disk"].model:
@@ -195,7 +195,7 @@ class SelectionDiskPage(Page):
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, False)
 
     def load_page(self):
-        self.set_selected_language_row()
+        self.set_selected_disk_row()
         self.enable_next_step()
 
     def refresh_ui_language(self):

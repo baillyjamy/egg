@@ -23,3 +23,15 @@ msgstr "Vous avez sélectionnez le disque :"
 
 msgid "installation_partition"
 msgstr "Vous avez sélectionnez les partitions suivante :"
+
+msgid "installation_network_part2"
+msgstr "Votre nom d'hôte est :"
+
+msgid "installation_user"
+msgstr "Vous avez crée l'utilisateur suivant :"
+
+msgid "installation_user_username"
+msgstr "Nom d'utilisateur"
+
+msgid "installation_user_realfullname"
+msgstr "Nom réel d'utilisateur complet"

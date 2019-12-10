@@ -31,7 +31,11 @@
         },
         "network": {
             "id": "network",
-            "icon": "./ui/gtk/img/ico/page6_license.png"
+            "icon": "./ui/gtk/img/ico/page8_license.png"
+        },
+        "networkpart2": {
+            "id": "networkpart2",
+            "icon": "./ui/gtk/img/ico/page8_license.png"
         },
         "user": {
             "id": "user",

@@ -9,32 +9,23 @@ msgstr "Network configuration"
 msgid "sidebar_title"
 msgstr "Network configuration"
 
-msgid "root_configuration_title"
-msgstr "Configuration for the user root"
+msgid "network_configuration_choice_1"
+msgstr "Automatic configuration"
 
-msgid "user_configuration_title"
-msgstr "Configuration for your personnal user account"
+msgid "network_configuration_choice_2"
+msgstr "Manual configuration"
 
-msgid "user_real_name_entry_label"
-msgstr "Your name and your real firstname"
+msgid "network_ip_address"
+msgstr "Configure your ip address:"
 
-msgid "user_entry_label"
-msgstr "Your username"
+msgid "network_netmask_address"
+msgstr "Configure your netmask address:"
 
-msgid "password_entry_label"
-msgstr "Type your password"
+msgid "network_gateway_address"
+msgstr "Configure your gateway address:"
 
-msgid "validation_password_entry_label"
-msgstr "Confirm your password"
+msgid "network_nameserver1_address"
+msgstr "Configure your first name server:"
 
-msgid "user_placeholder_entry"
-msgstr "Type your username here"
-
-msgid "user_real_placeholder_entry"
-msgstr "Type your real fullname here"
-
-msgid "user_requirement_label"
-msgstr "The username should have only letters in uppercase and lowercase from a to z, numbers, and the following characters: .-_"
-
-msgid "password_requirement_label"
-msgstr "The password should have letters in uppercase and lowercase, numbers, and special characters"
+msgid "network_nameserver2_address"
+msgstr "Configure your second name server:"

@@ -8,7 +8,7 @@ class WifiService(object):
     def __init__(self, network_card):
         self.network_card = network_card
 
-    def ListWifi(self):
+    def get_list_wifi(self):
         wifissid = []
 
         cells = wifi.Cell.all(self.network_card)

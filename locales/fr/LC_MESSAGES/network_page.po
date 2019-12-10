@@ -9,32 +9,26 @@ msgstr "Configuration réseau"
 msgid "sidebar_title"
 msgstr "Configuration réseau"
 
-msgid "root_configuration_title"
-msgstr "Configuration pour l'utilisateur root"
+msgid "network_configuration_choice_1"
+msgstr "Configuration automatique"
 
-msgid "user_configuration_title"
-msgstr "Configuration pour votre compte utilisateur personnel"
+msgid "network_configuration_choice_2"
+msgstr "Configuration manuel"
 
-msgid "user_real_name_entry_label"
-msgstr "Votre nom et prénom réel"
+msgid "network_ip_address"
+msgstr "Configurer votre addresse ip :"
 
-msgid "user_entry_label"
-msgstr "Nom d'utilisateur"
+msgid "network_netmask_address"
+msgstr "Configurer votre masque sous-réseau :"
 
-msgid "password_entry_label"
-msgstr "Entrer votre mot de passe"
+msgid "network_gateway_address"
+msgstr "Configurer votre passerelle réseau :"
 
-msgid "validation_password_entry_label"
-msgstr "Confirmer votre mot de passe"
+msgid "network_nameserver1_address"
+msgstr "Configurer le premier serveur de nom :"
 
-msgid "user_placeholder_entry"
-msgstr "Taper votre nom d'utilisateur ici"
+msgid "network_nameserver2_address"
+msgstr "Configurer le second serveur de nom :"
 
-msgid "user_real_placeholder_entry"
-msgstr "Taper votre réel nom d'utilisateur complet ici"
-
-msgid "user_requirement_label"
-msgstr "Le nom d'utilisateur doit seulement avoir des lettres en majuscules et minuscules de a à z, nombres, et les caractères suivant : .-_"
-
-msgid "password_requirement_label"
-msgstr "Le mot de passe doit avoir des lettres en majuscules et minuscules, des nombres, et des caractères spéciaux"
+msgid "network_hostname"
+msgstr "Configuration de votre nom d'hôte :"
