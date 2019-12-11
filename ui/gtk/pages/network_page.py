@@ -83,17 +83,13 @@ class Components():
         self._components["listbox_interfaces_window"] = Gtk.ListBox()
 
         self._components["listbox_radio_selection"] = Gtk.ListBox()
-        self._components["more_interfaces_button"] = Gtk.Image.new_from_icon_name("view-refresh-symbolic",
-                                                        Gtk.IconSize.MENU)
-
-
+        self._components["more_interfaces_button"] = Gtk.Image.new_from_icon_name("view-more-symbolic", Gtk.IconSize.MENU)
 
 
         self._components["scroll_wifi_window"] = Gtk.ScrolledWindow(None, None)
         self._components["listbox_wifi_window"] = Gtk.ListBox()
-        self._components["more_wifi_button"] = Gtk.Button()
-        self._components["reload_wifi_button"] = Gtk.Image.new_from_icon_name("view-more-symbolic",
-                                                        Gtk.IconSize.MENU)
+        self._components["more_wifi_button"] = Gtk.Image.new_from_icon_name("view-more-symbolic", Gtk.IconSize.MENU)
+        self._components["reload_wifi_button"] = Gtk.Button()
         self._components["label_wifi_password"] = Gtk.Label()
 
         self._components["label_ip_address"] = Gtk.Label()
@@ -139,7 +135,6 @@ class NetworkPage(Page):
         self._components.get_component("general_grid").set_row_spacing(30)
         self._components.get_component("general_grid").set_column_spacing(35)
 
-        self._components.get_component("more_interfaces_button").add(Gtk.Image.new_from_icon_name("view-more-symbolic", Gtk.IconSize.MENU))
         # Entry
         self._components.add_component("entry_ip_address",
             FieldsEntry("entry_ip_address", "", "", False, False, self.entry_ip_address))
@@ -182,7 +177,8 @@ class NetworkPage(Page):
         self._components.get_component("first_part").pack_start(self._components.get_component("scroll_interfaces_window"), True, True, 0)
         self._components.get_component("first_part").pack_start(self._components.get_component("listbox_radio_selection"), True, False, 1)
 
-        self._components.get_component("second_part").pack_start(self._components.get_component("more_interfaces_button"), True, False, 0)
+        self._components.get_component("reload_wifi_button").add(Gtk.Image.new_from_icon_name("view-refresh-symbolic", Gtk.IconSize.MENU))
+        self._components.get_component("second_part").pack_start(self._components.get_component("reload_wifi_button"), True, False, 0)
         self._components.get_component("second_part").pack_start(self._components.get_component("scroll_wifi_window"), True, True, 1)
         self._components.get_component("second_part").pack_start(self._components.get_component("label_wifi_password"), True, False, 2)
         self._components.get_component("second_part").pack_start(self._components.get_component("entry_wifi_password"), True, False, 3)
