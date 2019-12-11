@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gdk, GLib, GdkPixbuf
 from ui.gtk.pages.page import Page
 from ui.gtk.main_window_button import MainWindowButton
-
+from egg.network_management.interfaces_service import NetworkType, NetworkIpAttributionType
 
 class SummaryRow(Gtk.Frame):
     vbox = None
@@ -143,6 +143,14 @@ class SummarryPage(Page):
         timezone_country = ""
         selection_disk_page = ""
         selection_partition_page = ""
+        interface_type_network_page = ""
+        wifi_name_network_page = ""
+        ip_attribution_type_network_page = ""
+        ip_network_page = ""
+        netmask_network_page = ""
+        gateway_network_page = ""
+        nameserver1_network_page = ""
+        nameserver2_network_page = ""
         hostname_network_part2_page = ""
         username_user_page = ""
         realfullname_user_page = ""
@@ -176,6 +184,42 @@ class SummarryPage(Page):
         if "network_page" in self._config_general and "hostname" in self._config_general["network_page"] and self._config_general["network_page"]["hostname"] is not None:
             hostname_network_part2_page = self._config_general["network_page"]["hostname"]
 
+        if "network_page" in self._config_general and "hostname" in self._config_general["network_page"] and self._config_general["network_page"]["hostname"] is not None:
+            hostname_network_part2_page = self._config_general["network_page"]["hostname"]
+
+        if "network_page" in self._config_general and "current_interface_configuration" in self._config_general["network_page"] and self._config_general["network_page"]["current_interface_configuration"] is not None:
+            value = self._config_general["network_page"]["current_interface_configuration"].networkType
+            if value == NetworkType.WIFI:
+                interface_type_network_page = "wifi"
+                if "wifi_cell" in self._config_general["network_page"] and self._config_general["network_page"]["wifi_cell"] != None:
+                    wifi_name_network_page = self._config_general["network_page"]["wifi_cell"].ssid
+            elif value == NetworkType.ETH:
+                interface_type_network_page = "ethernet"
+
+
+        if "network_page" in self._config_general and "current_interface_configuration" in self._config_general["network_page"] and self._config_general["network_page"]["current_interface_configuration"] is not None:
+            if self._config_general["network_page"]["current_interface_configuration"].networkIpAttributionType is NetworkIpAttributionType.MANUAL:
+                ip_attribution_type_network_page = self._language_manager.translate_msg("summary_page", "installation_ip_manual_attribution_type_network")
+                if "network_page" in self._config_general and "current_interface_configuration" in self._config_general["network_page"] and self._config_general["network_page"]["current_interface_configuration"] is not None:
+                    ip_network_page = self._config_general["network_page"]["current_interface_configuration"].ipAddress
+
+                if "network_page" in self._config_general and "current_interface_configuration" in self._config_general["network_page"] and self._config_general["network_page"]["current_interface_configuration"] is not None:
+                    netmask_network_page = self._config_general["network_page"]["current_interface_configuration"].netMaskAddress
+
+                if "network_page" in self._config_general and "current_interface_configuration" in self._config_general["network_page"] and self._config_general["network_page"]["current_interface_configuration"] is not None:
+                    netmask_network_page = self._config_general["network_page"]["current_interface_configuration"].netMaskAddress
+
+                if "network_page" in self._config_general and "current_interface_configuration" in self._config_general["network_page"] and self._config_general["network_page"]["current_interface_configuration"] is not None:
+                    gateway_network_page = self._config_general["network_page"]["current_interface_configuration"].gatewayAddress
+
+                if "network_page" in self._config_general and "current_interface_configuration" in self._config_general["network_page"] and self._config_general["network_page"]["current_interface_configuration"] is not None:
+                    nameserver1_network_page = self._config_general["network_page"]["current_interface_configuration"].nameServer1
+
+                if "network_page" in self._config_general and "current_interface_configuration" in self._config_general["network_page"] and self._config_general["network_page"]["current_interface_configuration"] is not None:
+                    nameserver2_network_page = self._config_general["network_page"]["current_interface_configuration"].nameServer2
+            else:
+                ip_attribution_type_network_page = "DHCP"
+
         self._language_page.clean_label()
         self._language_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_language") + " " + locale_sz + " (" + locale + ")"))
         self._language_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_keyboard") + " " + keyboard_sz + " (" + keyboard + ")" ))
@@ -193,6 +237,21 @@ class SummarryPage(Page):
         if selection_partition_page is not "":
             for current in selection_partition_page:
                 self._partition_page.add_label(ContentLabel(current.get_partition_desc()))
+
+        self._network_page.clean_label()
+
+        # self._network_page.add_label(ContentLabel())
+        self._network_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_interface_type_network") + " " + interface_type_network_page))
+        if interface_type_network_page == "wifi":
+            self._network_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_wifi_name_network") + " " + wifi_name_network_page))
+        
+        self._network_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_ip_attribution_type_network") + " " + ip_attribution_type_network_page))
+        if ip_attribution_type_network_page != "DHCP":
+            self._network_page.add_label(ContentLabel("- " + self._language_manager.translate_msg("summary_page", "installation_ip_network") + " " + ip_network_page))
+            self._network_page.add_label(ContentLabel("- " + self._language_manager.translate_msg("summary_page", "installation_netmask_network") + " " + netmask_network_page))
+            self._network_page.add_label(ContentLabel("- " + self._language_manager.translate_msg("summary_page", "installation_gateway_network") + " " + gateway_network_page))
+            self._network_page.add_label(ContentLabel("- " + self._language_manager.translate_msg("summary_page", "installation_nameserver_network") + " " + "(" + nameserver1_network_page + ", " + nameserver2_network_page + ")" ))
+
 
         self._network_part2_page.clean_label()
         self._network_part2_page.add_label(ContentLabel(self._language_manager.translate_msg("summary_page", "installation_network_part2")))

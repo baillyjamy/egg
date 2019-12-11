@@ -32,3 +32,6 @@ msgstr "Configurer le second serveur de nom :"
 
 msgid "network_hostname"
 msgstr "Configuration de votre nom d'hôte :"
+
+msgid "network_wifi_password"
+msgstr "Configurer votre mot de passe wifi :"

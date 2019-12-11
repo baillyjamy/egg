@@ -111,8 +111,8 @@ class MainWindowGtk:
         all_pages = [
             LanguageLivePage(self._locale_general, self._config_general),
             LanguageInstallationPage(self._locale_general, self._config_general),
-            NetworkPart2Page(self._locale_general, self._config_general),
             NetworkPage(self._locale_general, self._config_general),
+            NetworkPart2Page(self._locale_general, self._config_general),
             TimezonePage(self._locale_general, self._config_general),
             SelectionDiskPage(self._locale_general, self._config_general),
             PartitionDiskPage(self._locale_general, self._config_general),
