@@ -87,8 +87,8 @@ class InstallRavenOS:
 
 
 
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; $grub_var-install --target=x86_64-efi --themes= --recheck --removable --efi-directory='" + raven_install_path + "/boot/efi" + " --boot-directory='" + raven_install_path + "/boot" + "' && sync"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; $grub_var-install --target=i386-pc --themes= --recheck --boot-directory='" + raven_install_path + "/boot" + "' " + self._config_general["selection_disk_page"]["current_disk_service"].path + " && sync"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; $grub_var-install --target=x86_64-efi --themes= --recheck --removable --efi-directory='" + raven_install_path + "/boot/efi" + " --boot-directory='" + raven_install_path + "/boot" + "' && sync")))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; $grub_var-install --target=i386-pc --themes= --recheck --boot-directory='" + raven_install_path + "/boot" + "' " + self._config_general["selection_disk_page"]["current_disk_service"].path + " && sync")))
 
         #/boot/grub/grub.cfg
 
