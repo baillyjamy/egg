@@ -367,8 +367,8 @@ class NetworkPage(Page):
                 self._components.get_component("entry_gateway_address").set_text(self.get_current_card().gatewayAddress)
                 self._components.get_component("entry_nameserver1").set_text("1.1.1.1")
                 self._components.get_component("entry_nameserver2").set_text("1.0.0.1")
-            thread = threading.Thread(target=self.refresh_wifi_thread)
-            return thread.start()
+            self.refresh_wifi_thread()
+            return
 
         self._components.get_component("scroll_interfaces_window").set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self._components.get_component("scroll_interfaces_window").set_vexpand(True)
