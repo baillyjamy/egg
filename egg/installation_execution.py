@@ -87,7 +87,36 @@ class InstallRavenOS:
 
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + self._config_general["user_page"]["root_password"] + "\n" + self._config_general["user_page"]["root_password"] + "\"")))
 
-        # resolv.conf
+        if self._config_general["network_page"]["current_interface_configuration"] is not None and self._config_general["network_page"]["current_interface_configuration"].networkIpAttributionType is NetworkIpAttributionType.MANUAL:
+            nameservers = ""
+            nameservers2 = ""
+
+            if self._config_general["network_page"]["current_interface_configuration"].nameServer1:
+                nameservers += self._config_general["network_page"]["current_interface_configuration"].nameServer1
+                nameservers2 += self._config_general["network_page"]["current_interface_configuration"].nameServer1
+
+            if self._config_general["network_page"]["current_interface_configuration"].nameServer2:
+                if nameservers:
+                    nameservers += "\n" + self._config_general["network_page"]["current_interface_configuration"].nameServer2
+                    nameservers2 += " " + self._config_general["network_page"]["current_interface_configuration"].nameServer2
+                else:
+                    nameservers += self._config_general["network_page"]["current_interface_configuration"].nameServer2
+                    nameservers2 += self._config_general["network_page"]["current_interface_configuration"].nameServer2
+
+            if nameservers:
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + nameservers  + "\" > /etc/resolv.conf")))
+            else:
+                nameservers2 = "8.8.8.8 8.8.4.4"
+
+            interface_config = "interface " + self._config_general["network_page"]["current_interface_configuration"].nameInterface + "\n"
+            interface_config += "static ip_address=" + self._config_general["network_page"]["current_interface_configuration"].ipAddress + "/24\n"
+            interface_config += "static routers=" + self._config_general["network_page"]["current_interface_configuration"].gatewayAddress + "\n"
+            interface_config += "domain_name_servers=" + self._config_general["network_page"]["current_interface_configuration"].nameservers2
+        else:
+            interface_config = "hostname\nduid\npersistent\noption rapid_commit\noption domain_name_servers, domain_name, domain_search, host_name\n"
+            interface_config += "option classless_static_routes\noption ntp_servers\noption interface_mtu\nrequire dhcp_server_identifier\nslaac private"
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + interface_config  + "\" > /etc/dhcpcd.conf")))
+
 
         # for current_ui, current in partitions:
         #     if current_ui.mount_point and current_ui.filesystem is not Filesystem.SWAP:
