@@ -112,7 +112,7 @@ class InstallRavenOS:
             interface_config = "interface " + self._config_general["network_page"]["current_interface_configuration"].nameInterface + "\n"
             interface_config += "static ip_address=" + self._config_general["network_page"]["current_interface_configuration"].ipAddress + "/24\n"
             interface_config += "static routers=" + self._config_general["network_page"]["current_interface_configuration"].gatewayAddress + "\n"
-            interface_config += "domain_name_servers=" + self._config_general["network_page"]["current_interface_configuration"].nameServer2
+            interface_config += "domain_name_servers=" + nameservers2
         else:
             interface_config = "hostname\nduid\npersistent\noption rapid_commit\noption domain_name_servers, domain_name, domain_search, host_name\n"
             interface_config += "option classless_static_routes\noption ntp_servers\noption interface_mtu\nrequire dhcp_server_identifier\nslaac private"
