@@ -263,16 +263,16 @@ class PartitionDiskPage(Page):
             self._disk_selection_update = self._config_general["selection_disk_page"]["current_disk_service"]
 
             disk_mo_capicity = SizeCalculator.get_mo_size(self._disk_selection_update.capacity) - (1024 + 560 + 2048)
-            partitions = [ PartitionParameter("Raven Installation Partition", "Boot partition", Filesystem.EXT4, "/boot", "RAVEN-OS PARTITION", True, 1024, 0, 1024),
-                PartitionParameter("Raven Installation Partition", "SWAP partition", Filesystem.SWAP, "", "RAVEN-OS PARTITION", False, 2048, 0, 2048),
-                PartitionParameter("Raven Installation Partition", "EFI partition", Filesystem.FAT32, "/boot/efi", "RAVEN-OS PARTITION", False, 560, 0, 560),
-                PartitionParameter("Raven Installation Partition", "Root partition", Filesystem.EXT4, "/", "RAVEN-OS PARTITION", False, disk_mo_capicity, 0, disk_mo_capicity)]
+            partitions = [ PartitionParameter("Raven Installation Partition", "Boot partition", Filesystem.EXT4, "/boot", "RAVEN-OS PARTITION", egg.disk_management.Partition.TagType.BOOT_GRUB, 1024, 0, 1024),
+                PartitionParameter("Raven Installation Partition", "SWAP partition", Filesystem.SWAP, "", "RAVEN-OS PARTITION", egg.disk_management.Partition.TagType.NORMAL, 2048, 0, 2048),
+                PartitionParameter("Raven Installation Partition", "EFI partition", Filesystem.FAT32, "/boot/efi", "RAVEN-OS PARTITION", egg.disk_management.Partition.TagType.BOOT, 560, 0, 560),
+                PartitionParameter("Raven Installation Partition", "Root partition", Filesystem.EXT4, "/", "RAVEN-OS PARTITION", egg.disk_management.Partition.TagType.NORMAL, disk_mo_capicity, 0, disk_mo_capicity)]
             self._components.get_component('partition_treeview').delete_rows()
             InstallQueue().clearAll()
             for current in partitions:
                 filesystem = egg.disk_management.Partition.Filesystem[str(current.filesystem.name)]
                 partition_type = egg.disk_management.Partition.Type.PARTITION_NORMAL
-                self._config_general["selection_disk_page"]["current_disk_service"].add_partition(filesystem, partition_type, current.is_bootable, current.size, "MB")
+                self._config_general["selection_disk_page"]["current_disk_service"].add_partition(filesystem, partition_type, current.tag, current.size, "MB")
                 self._components.get_component('partition_treeview').add_new_partition_row(current)
             self._components.get_component('partition_toolbar').nothing_selected()
             self._last_partition_type = new_partition_type

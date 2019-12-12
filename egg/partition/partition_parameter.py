@@ -1,6 +1,6 @@
 import parted
 from egg.filesystem import Filesystem
-
+from egg.disk_management.partition import Partition
 
 class PartitionParameter:
     # Restrict mount point to enum or not ?
@@ -15,10 +15,10 @@ class PartitionParameter:
     used_size = 0.0
     free_size_str = ''
     free_size = 0.0
-    is_bootable = False
+    tag = Partition.TagType
 
     def __init__(self, partition_name: str=None, name: str=None, filesystem: Filesystem=Filesystem.NOT_ALLOCATED, mount_point: str=None, label: str=None,
-                 is_bootable: bool=False, size: float=None, used_size: float=None, free_size: float=None) -> None:
+                 tag: bool=Partition.TagType.NORMAL, size: float=None, used_size: float=None, free_size: float=None) -> None:
         self.partition_name = partition_name
         self.name = name
         self.filesystem = filesystem
@@ -27,7 +27,7 @@ class PartitionParameter:
         self.set_size(size)
         self.set_used_size(used_size)
         self.set_free_size(free_size)
-        self.is_bootable = is_bootable
+        self.tag = tag
 
     def convert_str_to_filesytem(self, filesystem):
         if filesystem == "ntfs":
