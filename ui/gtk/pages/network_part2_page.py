@@ -85,7 +85,7 @@ class NetworkPart2Page(Page):
         self._win_parent = win
 
     def enable_next_step(self):
-        if 'hostname' in self._config_general['network_page'] and self._config_general['network_page']['hostname'] != None:
+        if self._win_parent is not None and 'hostname' in self._config_general['network_page'] and self._config_general['network_page']['hostname'] != None:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, True)
         elif self._win_parent is not None:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, False)
