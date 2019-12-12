@@ -141,10 +141,11 @@ class LanguageLivePage(Page):
                                                               1, 1, 1)
         self._components.get_component('general_grid').attach(self._components.get_component('language_window_label'), 0,
                                                               0, 1, 1)
-        self._components.get_component('general_grid').attach(self._components.get_component('keyboard_window_label'), 1,
-                                                              0, 1, 1)
-        self._components.get_component('general_grid').attach(self._components.get_component('keyboard_window_grid'), 1, 1,
-                                                              1, 1)
+        # TODO Alternative to setxkbmap
+        # self._components.get_component('general_grid').attach(self._components.get_component('keyboard_window_label'), 1,
+        #                                                       0, 1, 1)
+        # self._components.get_component('general_grid').attach(self._components.get_component('keyboard_window_grid'), 1, 1,
+        #                                                       1, 1)
 
     def on_row_click_language(self, list_box_language, current_row_language_clicked=None) -> None:
         if not current_row_language_clicked:
@@ -272,13 +273,15 @@ class LanguageLivePage(Page):
         self.set_selected_keyboard_row()
 
     def set_keyboard(self) -> None:
-        if 'keyboard' in self._config_general['language_live_page']\
-                and self._config_general['language_live_page']['keyboard'] != None:
-            try:
-                subprocess.check_call("setxkbmap {}".format(self._config_general['language_live_page']['keyboard']),
-                                      shell=True)
-            except Exception as e:
-                pass
+        pass
+        # TODO Alternative to setxkbmap
+        # if 'keyboard' in self._config_general['language_live_page']\
+        #         and self._config_general['language_live_page']['keyboard'] != None:
+        #     try:
+        #         subprocess.check_call("setxkbmap {}".format(self._config_general['language_live_page']['keyboard']),
+        #                               shell=True)
+        #     except Exception as e:
+        #         pass
 
     def set_system_language(self) -> None:
         if 'locale' in self._config_general['language_live_page']\

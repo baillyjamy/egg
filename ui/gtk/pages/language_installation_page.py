@@ -253,11 +253,13 @@ class LanguageInstallationPage(Page):
         self.set_selected_keyboard_row()
 
     def set_keyboard(self):
-        if "keyboard" in self._config_general["language_installation_page"] and self._config_general["language_installation_page"]["keyboard"] != None:
-            try:
-                subprocess.check_call("setxkbmap {}".format(self._config_general["language_installation_page"]["keyboard"]), shell=True)
-            except Exception as e:
-                pass
+        pass
+        # TODO Alternative to setxkbmap
+        # if "keyboard" in self._config_general["language_installation_page"] and self._config_general["language_installation_page"]["keyboard"] != None:
+        #     try:
+        #         subprocess.check_call("setxkbmap {}".format(self._config_general["language_installation_page"]["keyboard"]), shell=True)
+        #     except Exception as e:
+        #         pass
 
     def set_selected_keyboard_row(self):
         check_not_empty = self._components.get_component("listbox_keyboard_win").get_children()

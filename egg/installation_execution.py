@@ -53,6 +53,14 @@ class InstallRavenOS:
         partitions_in_dd = DiskService().get_disk(self._config_general["selection_disk_page"]["current_disk_service"].path).partitions
         partitions = list(zip(self._config_general['partition_disk']['partitions'], partitions_in_dd))
         partitions = sorted(partitions, key=cmp_to_key(lambda a, b: sort_by_path(a, b)))
+        
+
+        boot_path = None
+        for current in partitions:
+            (left, right) = current
+            if left.mount_point == "/boot":
+                boot_path = right.path
+                break
 
         # Mount multiple partitions
         raven_install_path = self._config_general['install_mount_point']
@@ -90,7 +98,7 @@ class InstallRavenOS:
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; $grub_var-install --target=x86_64-efi --themes= --recheck --removable --efi-directory='" + raven_install_path + "/boot/efi" + "' --boot-directory='" + raven_install_path + "/boot" + "' && sync")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; $grub_var-install --target=i386-pc --themes= --recheck --boot-directory='" + raven_install_path + "/boot" + "' " + self._config_general["selection_disk_page"]["current_disk_service"].path + " && sync")))
         grub_cfg = "menuentry 'Live' {\n"+ "	linux /boot/vmlinuz rootwait root=\"PARTUUID=$boot_uuid\" quiet\n" + "}\n\n" + "menuentry 'Graphical install' {\n"+ "	linux /boot/vmlinuz rootwait root=\"PARTUUID=$boot_uuid\" quiet\n" + "}\n\n" + "menuentry 'Manual install' {\n"+ "	linux /boot/vmlinuz rootwait root=\"PARTUUID=$boot_uuid\" quiet\n" + "}\n"
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("boot_uuid=`blkid -s PARTUUID -o value /dev/sdb2`; echo -e \""+ grub_cfg + "\" >> " + raven_install_path + "/boot/grub/grub.cfg")))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; boot_uuid=`blkid -s PARTUUID -o value " + boot_path + "`; echo -e \""+ grub_cfg + "\" >> " + raven_install_path + "/boot/$grub_var/grub.cfg")))
 
         if self._config_general["network_page"]["current_interface_configuration"] is not None and self._config_general["network_page"]["current_interface_configuration"].networkIpAttributionType is NetworkIpAttributionType.MANUAL:
             nameservers = ""

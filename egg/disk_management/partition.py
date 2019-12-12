@@ -13,6 +13,11 @@ class Partition(object):
         PARTITION_LOGICAL = parted.PARTITION_LOGICAL
         PARTITION_EXTENDED = parted.PARTITION_EXTENDED
 
+    class TagType(Enum):
+        BOOT_GRUB = "boot_grub"
+        BOOT = "boot"
+        NORMAL = "normal"
+
     class Filesystem(Enum):
         EXT4 = "ext4"
         SWAP = "linux-swap(v1)"
