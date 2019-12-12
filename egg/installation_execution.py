@@ -119,7 +119,8 @@ class InstallRavenOS:
             interface_config += "domain_name_servers=" + nameservers2
             InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + interface_config  + "\" > /etc/dhcpcd.conf")))
 
-
+        if self._config_general["network_page"]["current_interface_configuration"] is not None and self._config_general["network_page"]["current_interface_configuration"].networkType is NetworkType.WIFI:
+            InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "nmcli device wifi connect \"" + self._config_general["network_page"]["wifi_cell"].ssid + "\" password \"" + self._config_general["network_page"]["wifi_password"] + "\" ifname \"" + self._config_general["network_page"]["current_interface_configuration"].nameInterface + "\"")))
         # for current_ui, current in partitions:
         #     if current_ui.mount_point and current_ui.filesystem is not Filesystem.SWAP:
         #         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="umount " + current.path))

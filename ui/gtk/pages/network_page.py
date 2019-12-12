@@ -5,6 +5,7 @@ from egg.network_management.wifi_service import WifiService
 from egg.network_management.interfaces_service import NetworkInterfaces, NetworkIpAttributionType, NetworkType
 from gi.repository import Gtk, Gdk
 from egg.size_calculator import SizeCalculator
+import threading
 
 class FieldsEntry(Gtk.Entry):
     entry_id = None
@@ -242,11 +243,16 @@ class NetworkPage(Page):
     def get_current_card(self):
         return self._config_general["network_page"]["current_interface_configuration"]
 
-    def refresh_wifi(self, event):
+
+    def refresh_wifi_thread(self):
         if self.get_current_card().networkType is NetworkType.WIFI:
             self.load_wifi_list(self.get_current_card().nameInterface, True)
         else:
             self.load_wifi_list(self.get_current_card().nameInterface, False)
+
+    def refresh_wifi(self, event):
+        thread = threading.Thread(target=self.refresh_wifi_thread)
+        thread.start()
 
     def init_first_button_state(self):
         if self.get_current_card().networkIpAttributionType is NetworkIpAttributionType.DHCP:
@@ -361,10 +367,7 @@ class NetworkPage(Page):
                 self._components.get_component("entry_gateway_address").set_text(self.get_current_card().gatewayAddress)
                 self._components.get_component("entry_nameserver1").set_text("1.1.1.1")
                 self._components.get_component("entry_nameserver2").set_text("1.0.0.1")
-            if self.get_current_card().networkType is NetworkType.WIFI:
-                self.load_wifi_list(self.get_current_card().nameInterface, True)
-            else:
-                self.load_wifi_list(self.get_current_card().nameInterface, False)
+            self.refresh_wifi_thread()
             return
 
         self._components.get_component("scroll_interfaces_window").set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
