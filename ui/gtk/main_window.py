@@ -233,11 +233,13 @@ class MainWindowGtk:
         return False
 
     def set_keyboard(self, key):
-        if "keyboard" in self._config_general[key] and self._config_general[key]["keyboard"] != None:
-            try:
-                subprocess.check_call("setxkbmap {}".format(self._config_general[key]["keyboard"]), shell=True)
-            except Exception as e:
-                pass
+        pass
+        # TODO Alternative to setxkbmap
+        # if "keyboard" in self._config_general[key] and self._config_general[key]["keyboard"] != None:
+        #     try:
+        #         subprocess.check_call("setxkbmap {}".format(self._config_general[key]["keyboard"]), shell=True)
+        #     except Exception as e:
+        #         pass
 
     def raven_os_install(self):
         self._install_raven_os.install_raven_os()
