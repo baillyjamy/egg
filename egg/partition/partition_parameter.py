@@ -17,8 +17,8 @@ class PartitionParameter:
     free_size = 0.0
     is_bootable = False
 
-    def __init__(self, partition_name: str=None, name: str=None, filesystem: Filesystem=Filesystem.NOT_ALLOCATED, is_bootable: bool=False, mount_point: str=None, label: str=None,
-                 size: float=None, used_size: float=None, free_size: float=None) -> None:
+    def __init__(self, partition_name: str=None, name: str=None, filesystem: Filesystem=Filesystem.NOT_ALLOCATED, mount_point: str=None, label: str=None,
+                 is_bootable: bool=False, size: float=None, used_size: float=None, free_size: float=None) -> None:
         self.partition_name = partition_name
         self.name = name
         self.filesystem = filesystem

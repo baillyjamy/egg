@@ -60,6 +60,7 @@ class Disk(object):
             return InstallQueue().add(event)
         else:
             event = DiskInstallEvent(self.path, self.add_partition.__name__, fs=fs, partition_type=partition_type,
+                                     is_bootable=is_bootable,
                                      size=size, unit=unit)
             return InstallQueue().add(event)
 
