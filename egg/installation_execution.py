@@ -67,7 +67,8 @@ class InstallRavenOS:
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' pull"))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install corefs"))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install bash coreutils"))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install essentials-boot linux"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install linux"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install essentials-bootable"))
 
         for current_ui, current in partitions:
             if current_ui.filesystem is Filesystem.SWAP:
@@ -75,8 +76,8 @@ class InstallRavenOS:
 
 
         # Install config
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "useradd -c '" + self._config_general["user_page"]["user_realfullname"] + " -p '" + self._config_general["user_page"]["user_password"] + "' -m " + self._config_general["user_page"]["user_username"])))
-        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + self._config_general["user_page"]["root_password"] + "\n" + self._config_general["user_page"]["root_password"] + "\"")))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "useradd -c \"" + self._config_general["user_page"]["user_realfullname"] + "\" -p \"" + self._config_general["user_page"]["user_password"] + "\" -m " + self._config_general["user_page"]["user_username"])))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + self._config_general["user_page"]["root_password"] + "\n" + self._config_general["user_page"]["root_password"] + "\" | passwd")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "rm -f /etc/localtime")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "ln -sf /usr/share/zoneinfo/" + self._config_general["timezone_page"]["timezone_zone"] + " /etc/localtime")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo 'KEYMAP=\"" + self._config_general["language_installation_page"]["keyboard"] + "\"' > /etc/vconsole.conf")))
@@ -111,7 +112,7 @@ class InstallRavenOS:
             interface_config = "interface " + self._config_general["network_page"]["current_interface_configuration"].nameInterface + "\n"
             interface_config += "static ip_address=" + self._config_general["network_page"]["current_interface_configuration"].ipAddress + "/24\n"
             interface_config += "static routers=" + self._config_general["network_page"]["current_interface_configuration"].gatewayAddress + "\n"
-            interface_config += "domain_name_servers=" + self._config_general["network_page"]["current_interface_configuration"].nameservers2
+            interface_config += "domain_name_servers=" + self._config_general["network_page"]["current_interface_configuration"].nameServer2
         else:
             interface_config = "hostname\nduid\npersistent\noption rapid_commit\noption domain_name_servers, domain_name, domain_search, host_name\n"
             interface_config += "option classless_static_routes\noption ntp_servers\noption interface_mtu\nrequire dhcp_server_identifier\nslaac private"
