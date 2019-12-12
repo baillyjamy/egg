@@ -57,7 +57,7 @@ class NetworkPart2Page(Page):
 
     def init_components(self):
         self._components.add_component("entry_hostname_right",
-            FieldsEntry("entry_hostname_right", "", "", False, True, self.entry_hostname))
+            FieldsEntry("entry_hostname_right", "raven.localdomain", "", False, True, self.entry_hostname))
 
         self._components.get_component("general_grid").set_margin_start(10)
         self._components.get_component("general_grid").set_margin_end(10)
@@ -87,7 +87,7 @@ class NetworkPart2Page(Page):
     def enable_next_step(self):
         if 'hostname' in self._config_general['network_page'] and self._config_general['network_page']['hostname'] != None:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, True)
-        else:
+        elif self._win_parent is not None:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, False)
 
     def load_page(self):

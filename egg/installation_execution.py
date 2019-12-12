@@ -9,14 +9,13 @@ from egg.install_queue.install_queue import InstallQueue
 from egg.install_queue.install_event import BasicInstallCommandEvent
 from egg.disk_management.disk import Disk
 from egg.disk_management.diskservice import DiskService
+from egg.network_management.interfaces_service import NetworkType, NetworkIpAttributionType
 
 from egg.filesystem import Filesystem
 import os
 
 
 def sort_by_path(left, right):
-    # Si ma string 1 est plus grande que la string 2 et que l'index 1 est inferieur 2
-    # Ou Si ma string 1 est plus petite que la string 2 et que l'index 1 est superieur à 2
     left_ui_partition, left_partition = left
     right_ui_partition, right_partition = right
 
@@ -47,42 +46,81 @@ class InstallRavenOS:
     
     def install_raven_os(self):
         # Exec event
-        # InstallQueue().execAll()
+        InstallQueue().execAll()
         
         # Exec formatage
-        # InstallQueue().execAll()
-        InstallQueue().clearAll()
+        InstallQueue().execAll()
         partitions_in_dd = DiskService().get_disk(self._config_general["selection_disk_page"]["current_disk_service"].path).partitions
         partitions = list(zip(self._config_general['partition_disk']['partitions'], partitions_in_dd))
         partitions = sorted(partitions, key=cmp_to_key(lambda a, b: sort_by_path(a, b)))
 
         # Mount multiple partitions
         raven_install_path = self._config_general['install_mount_point']
-        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path))
         
-        # for current_ui, current in partitions:
-        #     if current_ui.mount_point and current_ui.filesystem is not Filesystem.SWAP:
-        #         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path + current_ui.mount_point))
-        #         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount " + current.path + " " + raven_install_path + current_ui.mount_point))            
+        for current_ui, current in partitions:
+            if current_ui.mount_point and current_ui.filesystem is not Filesystem.SWAP:
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mkdir -p " + raven_install_path + current_ui.mount_point))
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="mount " + current.path + " " + raven_install_path + current_ui.mount_point))            
 
         # Install Raven
-        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' pull"))
-        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install corefs"))
-        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install bash coreutils"))
-        # InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install essentials linux"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' pull"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install corefs"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install bash coreutils"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install linux"))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="yes | " + self._config_general["nest_path"] + "nest --chroot='" + raven_install_path + "' install essentials-bootable"))
 
         for current_ui, current in partitions:
             if current_ui.filesystem is Filesystem.SWAP:
-                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "swapon " + current.path)))
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="swapon " + current.path))
 
 
         # Install config
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "useradd -c \"" + self._config_general["user_page"]["user_realfullname"] + "\" -p \"" + self._config_general["user_page"]["user_password"] + "\" -m " + self._config_general["user_page"]["user_username"])))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + self._config_general["user_page"]["root_password"] + "\n" + self._config_general["user_page"]["root_password"] + "\" | passwd")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "rm -f /etc/localtime")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "ln -sf /usr/share/zoneinfo/" + self._config_general["timezone_page"]["timezone_zone"] + " /etc/localtime")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo 'KEYMAP=\"" + self._config_general["language_installation_page"]["keyboard"] + "\"' > /etc/vconsole.conf")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo 'LANG=\"" + self._config_general["language_installation_page"]["locale"] + "\"' > /etc/locale.conf")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo '" + self._config_general["network_page"]["hostname"] + "' > /etc/hostname")))
         InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command="genfstab -U -p " + raven_install_path + " > /etc/fstab"))
+
+
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; $grub_var-install --target=x86_64-efi --themes= --recheck --removable --efi-directory='" + raven_install_path + "/boot/efi" + "' --boot-directory='" + raven_install_path + "/boot" + "' && sync")))
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("grub_var=`which grub2-install > /dev/null 2>&1 && echo grub2 || echo grub`; $grub_var-install --target=i386-pc --themes= --recheck --boot-directory='" + raven_install_path + "/boot" + "' " + self._config_general["selection_disk_page"]["current_disk_service"].path + " && sync")))
+
+        grub_cfg = "menuentry 'Live' {\n"+ "	linux /boot/vmlinuz rootwait root=\"PARTUUID=$boot_uuid\" quiet\n" + "}\n\n" + "menuentry 'Graphical install' {\n"+ "	linux /boot/vmlinuz rootwait root=\"PARTUUID=$boot_uuid\" quiet\n" + "}\n\n" + "menuentry 'Manual install' {\n"+ "	linux /boot/vmlinuz rootwait root=\"PARTUUID=$boot_uuid\" quiet\n" + "}\n"
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=("boot_uuid=`blkid -s PARTUUID -o value /dev/sdb2`; echo -e \""+ grub_cfg + "\" >> " + raven_install_path + "/boot/grub/grub.cfg")))
+
+        if self._config_general["network_page"]["current_interface_configuration"] is not None and self._config_general["network_page"]["current_interface_configuration"].networkIpAttributionType is NetworkIpAttributionType.MANUAL:
+            nameservers = ""
+            nameservers2 = ""
+
+            if self._config_general["network_page"]["current_interface_configuration"].nameServer1:
+                nameservers += self._config_general["network_page"]["current_interface_configuration"].nameServer1
+                nameservers2 += self._config_general["network_page"]["current_interface_configuration"].nameServer1
+
+            if self._config_general["network_page"]["current_interface_configuration"].nameServer2:
+                if nameservers:
+                    nameservers += "\n" + self._config_general["network_page"]["current_interface_configuration"].nameServer2
+                    nameservers2 += " " + self._config_general["network_page"]["current_interface_configuration"].nameServer2
+                else:
+                    nameservers += self._config_general["network_page"]["current_interface_configuration"].nameServer2
+                    nameservers2 += self._config_general["network_page"]["current_interface_configuration"].nameServer2
+
+            if nameservers:
+                InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + nameservers  + "\" > /etc/resolv.conf")))
+            else:
+                nameservers2 = "8.8.8.8 8.8.4.4"
+
+            interface_config = "interface " + self._config_general["network_page"]["current_interface_configuration"].nameInterface + "\n"
+            interface_config += "static ip_address=" + self._config_general["network_page"]["current_interface_configuration"].ipAddress + "/24\n"
+            interface_config += "static routers=" + self._config_general["network_page"]["current_interface_configuration"].gatewayAddress + "\n"
+            interface_config += "domain_name_servers=" + nameservers2
+        else:
+            interface_config = "hostname\nduid\npersistent\noption rapid_commit\noption domain_name_servers, domain_name, domain_search, host_name\n"
+            interface_config += "option classless_static_routes\noption ntp_servers\noption interface_mtu\nrequire dhcp_server_identifier\nslaac private"
+        InstallQueue().add(BasicInstallCommandEvent(BasicInstallCommandEvent.exec_command.__name__, command=chroot_command(raven_install_path, "echo -e \"" + interface_config  + "\" > /etc/dhcpcd.conf")))
 
 
         # for current_ui, current in partitions:

@@ -71,7 +71,10 @@ class NetworkInterfaces(object):
             mac_addrs_detail = addrs[netifaces.AF_LINK]
             if len(mac_addrs_detail) > 0:
                 mac_addrs_detail = mac_addrs_detail[0]
-            return NetworkConfiguration(ifName, mac_addrs_detail.get('addr', None), type_card, addrs_detail.get('addr', None), addrs_detail.get('netmask', None))
+            gateways = netifaces.gateways()[addrs_type]
+            gateway = next((c for c in gateways if c[1] == ifName), None)
+            gateway = gateway[0] if (gateway is not None) else None
+            return NetworkConfiguration(ifName, mac_addrs_detail.get('addr', None), type_card, addrs_detail.get('addr', None), addrs_detail.get('netmask', None), gateway)
 
     def get_all_cards(self):
         all_network_configurations = list()

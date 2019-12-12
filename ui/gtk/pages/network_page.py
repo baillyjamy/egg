@@ -77,7 +77,8 @@ class Components():
         self._components["first_part"] = Gtk.Box(self, orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self._components["second_part"] = Gtk.Box(self, orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self._components["third_part"] = Gtk.Box(self, orientation=Gtk.Orientation.VERTICAL, spacing=0)
-
+        self._components["fourth_part"] = Gtk.Box(self, orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self._components["fifth_part"] = Gtk.Box(self, orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
         self._components["scroll_interfaces_window"] = Gtk.ScrolledWindow(None, None)
         self._components["listbox_interfaces_window"] = Gtk.ListBox()
@@ -115,7 +116,6 @@ class NetworkPage(Page):
         self._config_general = config_general
         self._config_general["network_page"] = {}
         self._config_general["network_page"]["current_interface_configuration"] = None
-        self._config_general["network_page"]["hostname"] = None
         self._config_general["network_page"]["wifi_cell"] = None
         self._config_general["network_page"]["wifi_password"] = None
 
@@ -132,7 +132,7 @@ class NetworkPage(Page):
         self._components.get_component("general_grid").set_margin_end(10)
         self._components.get_component("general_grid").set_margin_top(10)
         self._components.get_component("general_grid").set_margin_bottom(10)
-        self._components.get_component("general_grid").set_row_spacing(30)
+        # self._components.get_component("general_grid").set_row_spacing(30)
         self._components.get_component("general_grid").set_column_spacing(35)
 
         # Entry
@@ -157,9 +157,13 @@ class NetworkPage(Page):
         self._components.get_component("scroll_interfaces_window").set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         self._components.get_component("scroll_interfaces_window").add(self._components.get_component("listbox_interfaces_window"))
         self._components.get_component("scroll_interfaces_window").set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
-
+        self._components.get_component("scroll_interfaces_window").set_halign(Gtk.Align.START)
 
         # Wifi box
+
+        self._components.get_component("reload_wifi_button").add(Gtk.Image.new_from_icon_name("view-refresh-symbolic", Gtk.IconSize.MENU))
+        self._components.get_component("reload_wifi_button").connect("clicked", self.refresh_wifi)
+
         self._components.get_component("listbox_wifi_window").set_size_request(60, -1)
         self._components.get_component("listbox_wifi_window").connect_after("row-selected", self.on_row_select_wifi)
         self._components.get_component("more_wifi_button").show_all()
@@ -167,36 +171,53 @@ class NetworkPage(Page):
         self._components.get_component("scroll_wifi_window").set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         self._components.get_component("scroll_wifi_window").add(self._components.get_component("listbox_wifi_window"))
         self._components.get_component("scroll_wifi_window").set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
+       
+        self._components.get_component("first_part").set_valign(Gtk.Align.START)
+        self._components.get_component("first_part").set_halign(Gtk.Align.START)
+        self._components.get_component("second_part").set_valign(Gtk.Align.START)
+        self._components.get_component("second_part").set_halign(Gtk.Align.START)
+        self._components.get_component("third_part").set_valign(Gtk.Align.START)
+        self._components.get_component("third_part").set_halign(Gtk.Align.START)
+        self._components.get_component("fourth_part").set_valign(Gtk.Align.START)
+        self._components.get_component("fourth_part").set_halign(Gtk.Align.START)
+        self._components.get_component("fifth_part").set_valign(Gtk.Align.START)
+        self._components.get_component("fifth_part").set_halign(Gtk.Align.START)
 
 
+        self._components.get_component("reload_wifi_button").set_valign(Gtk.Align.START)
+        self._components.get_component("reload_wifi_button").set_halign(Gtk.Align.CENTER)
+        
         # Box
         self._components.get_component("listbox_radio_selection").set_size_request(60, -1)
         self._components.get_component("listbox_radio_selection").set_selection_mode(Gtk.SelectionMode.NONE)
 
         # Attach general grid
-        self._components.get_component("first_part").pack_start(self._components.get_component("scroll_interfaces_window"), True, True, 0)
-        self._components.get_component("first_part").pack_start(self._components.get_component("listbox_radio_selection"), True, False, 1)
+        self._components.get_component("first_part").pack_start(self._components.get_component("scroll_interfaces_window"), False, False, 0)
+        self._components.get_component("first_part").pack_start(self._components.get_component("listbox_radio_selection"), False, False, 1)
+        
+        self._components.get_component("second_part").pack_start(self._components.get_component("scroll_wifi_window"), True, False, 0)
+        self._components.get_component("second_part").pack_start(self._components.get_component("reload_wifi_button"), True, True, 1)
 
-        self._components.get_component("reload_wifi_button").add(Gtk.Image.new_from_icon_name("view-refresh-symbolic", Gtk.IconSize.MENU))
-        self._components.get_component("second_part").pack_start(self._components.get_component("reload_wifi_button"), True, False, 0)
-        self._components.get_component("second_part").pack_start(self._components.get_component("scroll_wifi_window"), True, True, 1)
-        self._components.get_component("second_part").pack_start(self._components.get_component("label_wifi_password"), True, False, 2)
-        self._components.get_component("second_part").pack_start(self._components.get_component("entry_wifi_password"), True, False, 3)
+        self._components.get_component("third_part").pack_start(self._components.get_component("label_wifi_password"), False, False, 0)
+        self._components.get_component("third_part").pack_start(self._components.get_component("entry_wifi_password"), False, False, 1)
 
-        self._components.get_component("third_part").pack_start(self._components.get_component("label_ip_address"), True, False, 0)
-        self._components.get_component("third_part").pack_start(self._components.get_component("entry_ip_address"), True, False, 1)
-        self._components.get_component("third_part").pack_start(self._components.get_component("label_netmask_address"), True, False, 2)
-        self._components.get_component("third_part").pack_start(self._components.get_component("entry_netmask_address"), True, False, 3)
-        self._components.get_component("third_part").pack_start(self._components.get_component("label_gateway_address"), True, False, 4)
-        self._components.get_component("third_part").pack_start(self._components.get_component("entry_gateway_address"), True, False, 5)
-        self._components.get_component("third_part").pack_start(self._components.get_component("label_nameserver1"), True, False, 6)
-        self._components.get_component("third_part").pack_start(self._components.get_component("entry_nameserver1"), True, False, 7)
-        self._components.get_component("third_part").pack_start(self._components.get_component("label_nameserver2"), True, False, 8)
-        self._components.get_component("third_part").pack_start(self._components.get_component("entry_nameserver2"), True, False, 9)
+        self._components.get_component("fourth_part").pack_start(self._components.get_component("label_ip_address"), True, False, 0)
+        self._components.get_component("fourth_part").pack_start(self._components.get_component("entry_ip_address"), True, False, 1)
+        self._components.get_component("fourth_part").pack_start(self._components.get_component("label_netmask_address"), True, False, 2)
+        self._components.get_component("fourth_part").pack_start(self._components.get_component("entry_netmask_address"), True, False, 3)
+        self._components.get_component("fourth_part").pack_start(self._components.get_component("label_gateway_address"), True, False, 4)
+        self._components.get_component("fourth_part").pack_start(self._components.get_component("entry_gateway_address"), True, False, 5)
+        
+        self._components.get_component("fifth_part").pack_start(self._components.get_component("label_nameserver1"), True, False, 0)
+        self._components.get_component("fifth_part").pack_start(self._components.get_component("entry_nameserver1"), True, False, 1)
+        self._components.get_component("fifth_part").pack_start(self._components.get_component("label_nameserver2"), True, False, 2)
+        self._components.get_component("fifth_part").pack_start(self._components.get_component("entry_nameserver2"), True, False, 3)
         
         self._components.get_component("general_grid").attach(self._components.get_component("first_part"), 1, 0, 1, 1)
         self._components.get_component("general_grid").attach(self._components.get_component("second_part"), 2, 0, 1, 1)
         self._components.get_component("general_grid").attach(self._components.get_component("third_part"), 3, 0, 1, 1)
+        self._components.get_component("general_grid").attach(self._components.get_component("fourth_part"), 4, 0, 1, 1)
+        self._components.get_component("general_grid").attach(self._components.get_component("fifth_part"), 5, 0, 1, 1)
 
 
     def entry_ip_address(self, data):
@@ -221,11 +242,19 @@ class NetworkPage(Page):
     def get_current_card(self):
         return self._config_general["network_page"]["current_interface_configuration"]
 
+    def refresh_wifi(self, event):
+        if self.get_current_card().networkType is NetworkType.WIFI:
+            self.load_wifi_list(self.get_current_card().nameInterface, True)
+        else:
+            self.load_wifi_list(self.get_current_card().nameInterface, False)
+
     def init_first_button_state(self):
         if self.get_current_card().networkIpAttributionType is NetworkIpAttributionType.DHCP:
-            self._components.get_component("third_part").hide()
+            self._components.get_component("fourth_part").hide()
+            self._components.get_component("fifth_part").hide()
         else:
-            self._components.get_component("third_part").show()
+            self._components.get_component("fourth_part").show()
+            self._components.get_component("fifth_part").show()
 
     def on_radio_button(self, button, btnType):
         self._config_general["network_page"]["current_interface_configuration"].networkIpAttributionType = NetworkIpAttributionType(btnType)
@@ -258,7 +287,8 @@ class NetworkPage(Page):
 
     def load_wifi_list(self, netinterfaceName, wifi):
         if wifi is False:
-            self._components.get_component("scroll_wifi_window").hide()
+            self._components.get_component("second_part").hide()
+            self._components.get_component("third_part").hide()
             self._config_general["network_page"]["wifi_password"] = None
             return
 
@@ -270,9 +300,11 @@ class NetworkPage(Page):
         wifiList = wifiService.get_list_wifi()
         for current in wifiList:
             self._components.get_component("listbox_wifi_window").add(WifiCardLabel(current))
-        self._components.get_component("listbox_wifi_window").add(self._components.get_component("more_wifi_button"))
+        # self._components.get_component("listbox_wifi_window").add(self._components.get_component("more_wifi_button"))
+        self._components.get_component("listbox_wifi_window").show_all()
         self.set_selected_wifi_row()
-        self._components.get_component("scroll_wifi_window").show()
+        self._components.get_component("second_part").show()
+        self._components.get_component("third_part").show()
 
     def on_row_select_wifi(self, list_box, current_row_clicked=None):
         if not list_box or current_row_clicked is None:
@@ -326,7 +358,7 @@ class NetworkPage(Page):
             if self.get_current_card().networkIpAttributionType is NetworkIpAttributionType.MANUAL:
                 self._components.get_component("entry_ip_address").set_text(self.get_current_card().ipAddress)
                 self._components.get_component("entry_netmask_address").set_text(self.get_current_card().netMaskAddress)
-                # self._components.get_component("entry_gateway_address").set_text(self.get_current_card().gatewayAddress)
+                self._components.get_component("entry_gateway_address").set_text(self.get_current_card().gatewayAddress)
                 self._components.get_component("entry_nameserver1").set_text("1.1.1.1")
                 self._components.get_component("entry_nameserver2").set_text("1.0.0.1")
             if self.get_current_card().networkType is NetworkType.WIFI:
@@ -374,16 +406,17 @@ class NetworkPage(Page):
         self._win_parent = win
 
     def enable_next_step(self):
-        if 'current_disk' in self._config_general['network_page'] and self._config_general['network_page']['current_disk'] != None and 'partition_type' in self._config_general['network_page'] and self._config_general['network_page']['partition_type'] != None:
+        # TODO CDS: Check configuration
+        if 'current_interface_configuration' in self._config_general['network_page'] and self._config_general['network_page']['current_interface_configuration'] != None:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, True)
         else:
             self._win_parent.set_button_action_visibility(MainWindowButton.NEXT, False)
 
     def load_page(self):
         self.set_selected_card_row()
-        # self.enable_next_step()
 
     def refresh_ui_language(self):        
+        self._components.get_component("label_wifi_password").set_text(self._language_manager.translate_msg("network_page", "network_wifi_password"))
         self._components.get_component("label_ip_address").set_text(self._language_manager.translate_msg("network_page", "network_ip_address"))
         self._components.get_component("label_netmask_address").set_text(self._language_manager.translate_msg("network_page", "network_netmask_address"))
         self._components.get_component("label_gateway_address").set_text(self._language_manager.translate_msg("network_page", "network_gateway_address"))

@@ -29,3 +29,6 @@ msgstr "Configure your first name server:"
 
 msgid "network_nameserver2_address"
 msgstr "Configure your second name server:"
+
+msgid "network_wifi_password"
+msgstr "Configure your wifi password:"

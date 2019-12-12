@@ -35,3 +35,27 @@ msgstr "Nom d'utilisateur"
 
 msgid "installation_user_realfullname"
 msgstr "Nom réel d'utilisateur complet"
+
+msgid "installation_ip_manual_attribution_type_network"
+msgstr "Manuel"
+
+msgid "installation_interface_type_network"
+msgstr "Connexion de type :"
+
+msgid "installation_wifi_name_network"
+msgstr "Sur :"
+
+msgid "installation_ip_attribution_type_network"
+msgstr "Configuration IP de type :"
+
+msgid "installation_ip_network"
+msgstr "IP :"
+
+msgid "installation_netmask_network"
+msgstr "Masque de sous-réseaux :"
+
+msgid "installation_gateway_network"
+msgstr "Passerelle internet :"
+
+msgid "installation_nameserver_network"
+msgstr "Serveur de noms :"
