@@ -15,8 +15,9 @@ class PartitionParameter:
     used_size = 0.0
     free_size_str = ''
     free_size = 0.0
+    is_bootable = False
 
-    def __init__(self, partition_name: str=None, name: str=None, filesystem: Filesystem=Filesystem.NOT_ALLOCATED, mount_point: str=None, label: str=None,
+    def __init__(self, partition_name: str=None, name: str=None, filesystem: Filesystem=Filesystem.NOT_ALLOCATED, is_bootable: bool=False, mount_point: str=None, label: str=None,
                  size: float=None, used_size: float=None, free_size: float=None) -> None:
         self.partition_name = partition_name
         self.name = name
@@ -26,6 +27,7 @@ class PartitionParameter:
         self.set_size(size)
         self.set_used_size(used_size)
         self.set_free_size(free_size)
+        self.is_bootable = is_bootable
 
     def convert_str_to_filesytem(self, filesystem):
         if filesystem == "ntfs":

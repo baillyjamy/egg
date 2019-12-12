@@ -32,7 +32,7 @@ class Disk(object):
             event = DiskInstallEvent(self.path, self.write_table.__name__, table_name=table_name)
             InstallQueue().add(event)
 
-    def add_partition(self, fs: Partition.Filesystem, partition_type: Partition.Type, size: int, unit: str):
+    def add_partition(self, fs: Partition.Filesystem, partition_type: Partition.Type, is_bootable: bool, size: int, unit: str):
         if self.is_managed:
             if len(self.partitions) == 0:
                 start = 0
@@ -44,7 +44,10 @@ class Disk(object):
             filesystem = parted.FileSystem(type=fs.value, geometry=geometry)
             partition = parted.Partition(disk=self.disk, type=partition_type.value, fs=filesystem, geometry=geometry)
             self.disk.addPartition(partition, constraint=self.device.optimalAlignedConstraint)
-            partition.setFlag(parted.PARTITION_NORMAL)
+            if is_bootable:
+                partition.setFlag(parted.PARTITION_BOOT)
+            else:
+                partition.setFlag(parted.PARTITION_NORMAL)
             self.disk.commit()
 
             event = None
