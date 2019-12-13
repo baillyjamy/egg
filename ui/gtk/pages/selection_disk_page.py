@@ -107,7 +107,7 @@ class SelectionDiskPage(Page):
         self._config_general["selection_disk_page"]["partition_type"] = partition_type
         self.enable_next_step()
 
-    def add_radio_button(self, radio_id, label):
+    def add_radio_button(self, radio_id, label, hidden):
         if not self._components.get_component("listbox_radio_selection").get_children() or not self._components.get_component("listbox_radio_selection").get_children()[0]:
             current_button = DiskActionChooserRadioButton(radio_id, label, None)
         else:
@@ -115,10 +115,12 @@ class SelectionDiskPage(Page):
 
         current_button.connect("toggled", self.on_radio_button, radio_id)
         self._components.get_component("listbox_radio_selection").add(current_button)
+        if hidden:
+            current_button.set_sensitive(False)
 
     def add_partition_type_buttons(self):
-        self.add_radio_button(1, self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_1"))
-        self.add_radio_button(2, self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_2"))
+        self.add_radio_button(1, self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_1"), False)
+        self.add_radio_button(2, self._language_manager.translate_msg("selection_disk_page", "disk_usage_choice_2"), True)
         self._config_general["selection_disk_page"]["partition_type"] = 1
 
     def on_row_select_disk(self, list_box_disk, current_row_disk_clicked=None):
